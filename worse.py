@@ -6,32 +6,62 @@ import matplotlib.pyplot as plt
 import aiofiles
 import os
 
+import dbitem
+
 scb = api_sc.StalcraftAPI()
 
 
 async def get_auc_lot(item_id: str, server: str, lang: str):
+    """
+    Функція обробник, формує відповіть з апі в повідомлення для бота
+    :param item_id: Ідентифікатор предмету (XXXX)
+    :param server: Назва серверу
+    :param lang: Мова інтерфейсу
+    :return: повідомлення
+    """
     lots = await scb.get_auction_lots(item=item_id, region=server)
     mass = []
+    it_artefact = dbitem.is_it_artifact(my_item_id=item_id, server_name=server)
     for a in lots['lots']:
         date = datetime.strptime(a['endTime'] + "+0000",
                                  "%Y-%m-%dT%H:%M:%SZ%z") - datetime.now(timezone.utc).replace(microsecond=0)
         hours = round(date.total_seconds() / 3600)
         minutes = round(date.total_seconds() % 60)
         date_str = "%d:%d" % (hours, minutes)
-        mass.append([a['startPrice'],
-                     a['buyoutPrice'],
-                     date_str])
+        row = [a['startPrice'], a['buyoutPrice'], date_str]
+        if it_artefact:
+            if 'qlt' not in a['additional'] or a['additional']['qlt'] == 0:
+                quality = 0
+            else:
+                quality = a['additional']['qlt']
+            row.append(quality)
+        mass.append(row)
     tab = PrettyTable()
     if lang == "EN":
-        tab.field_names = ["Start price", "Buy out price", "Time"]
+        field_names = ["Start price", "Out price", "Time"]
+        if it_artefact:
+            field_names.append("Qlt.")
+        tab.field_names = field_names
     else:
-        tab.field_names = ["Ставка", "Выкуп", "Время"]
+        field_names = ["Ставка", "Выкуп", "Время"]
+        if it_artefact:
+            field_names.append("Ред.")
+        tab.field_names = field_names
     for a in mass:
         tab.add_row(a)
     return tab.get_string()
 
 
 async def get_history(item_id: str, server: str, lang: str, item_name: str, image_path: str):
+    """
+    Функція обробник, на основі запиту на історію формує графік
+    :param item_id: Ідентифікатор предмету (XXXX)
+    :param server: Назва серверу
+    :param lang: Мова інтерфейсу
+    :param item_name: Назва предмету
+    :param image_path: Шлях до зображення предмету
+    :return: Графік в вигляді зображення
+    """
     histo = await scb.get_price_history(item=item_id, region=server)
     y = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
     x = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}

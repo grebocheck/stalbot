@@ -91,6 +91,12 @@ def search_item_id_by_name(my_item_name: str, server_name: str):
 
 
 def get_item_image(my_item_id: str, server_name: str):
+    """
+    Отримання назви предмету по його ID
+    :param my_item_id: Ідентифікатор предмету (XXXX)
+    :param server_name: Назва серверу
+    :return: Назва предмету
+    """
     gl_server = global_server(server_name)
     if gl_server:
         for a in item_db_global:
@@ -102,3 +108,18 @@ def get_item_image(my_item_id: str, server_name: str):
             item_id = a["data"].split("/")[-1][:-5]
             if item_id == my_item_id:
                 return "dbitem/ru" + a["icon"]
+
+
+def is_it_artifact(my_item_id: str, server_name: str):
+    """
+    Функція перевіряє чи являється цей предмет артефактом
+    :param my_item_id: Ідентифікатор предмету (XXXX)
+    :param server_name: Назва серверу
+    :return: Так чи Ні
+    """
+    name = get_item_image(my_item_id, server_name)
+    status = name.split("/")[3]
+    if status == "artefact":
+        return True
+    else:
+        return False
