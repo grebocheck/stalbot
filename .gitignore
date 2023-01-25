@@ -1,10 +1,4 @@
-settings.py
-/history
-box.py
-sc_bot_api.py
-sc_api.py
-test3.py
-test.py
-test2.py
+settings.ini
+__pycache__
 /venv
 /.idea
