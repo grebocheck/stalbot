@@ -2,19 +2,19 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, DATETIME
 from sqlalchemy import insert
 from sqlalchemy.sql import select
 from datetime import datetime, timezone, timedelta
-from dbitem import item_id_db_global, item_id_db_ru
+from database.dbitem import item_id_db_global, item_id_db_ru
 
 """
 Файл для вводу та виведення інформації про історію цін
 """
 
-EU_engine = create_engine('sqlite:///history/EU_histo.db', echo=False)
+EU_engine = create_engine('sqlite:///database/history/EU_histo.db', echo=False)
 EU_meta = MetaData()
-RU_engine = create_engine('sqlite:///history/RU_histo.db', echo=False)
+RU_engine = create_engine('sqlite:///database/history/RU_histo.db', echo=False)
 RU_meta = MetaData()
-NA_engine = create_engine('sqlite:///history/NA_histo.db', echo=False)
+NA_engine = create_engine('sqlite:///database/history/NA_histo.db', echo=False)
 NA_meta = MetaData()
-SEA_engine = create_engine('sqlite:///history/SEA_histo.db', echo=False)
+SEA_engine = create_engine('sqlite:///database/history/SEA_histo.db', echo=False)
 SEA_meta = MetaData()
 
 

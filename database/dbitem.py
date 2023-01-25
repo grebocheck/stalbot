@@ -1,9 +1,9 @@
 import json
 
-with open('dbitem/global/listing.json', "rb") as json_file:
+with open('database/dbitem/global/listing.json', "rb") as json_file:
     item_db_global = json.load(json_file)
 
-with open('dbitem/ru/listing.json', "rb") as json_file:
+with open('database/dbitem/ru/listing.json', "rb") as json_file:
     item_db_ru = json.load(json_file)
 
 

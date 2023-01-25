@@ -1,14 +1,12 @@
-import api_sc
-
 from datetime import datetime, timezone, timedelta
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
 import aiofiles
 import os
 
-import dbitem
+import database.dbitem as dbitem
 
-scb = api_sc.StalcraftAPI()
+from bot import *
 
 
 async def get_auc_lot(item_id: str, server: str, lang: str):
