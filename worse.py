@@ -87,6 +87,7 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
         elif a['additional']['qlt'] == 6:
             y['6'].append(a['price'])
             x['6'].append(datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z"))
+    plt.figure(figsize=(10, 10))
     plt.plot(x['0'], y['0'], color="gray", marker='o', markerfacecolor='black', markersize=3, label='0')
     plt.plot(x['1'], y['1'], color="green", marker='o', markerfacecolor='black', markersize=3, label='1')
     plt.plot(x['2'], y['2'], color="blue", marker='o', markerfacecolor='black', markersize=3, label='2')
