@@ -10,3 +10,4 @@ box.py
 sc_api.py
 sc_bot_api.py
 /log
+/bot/data.db
