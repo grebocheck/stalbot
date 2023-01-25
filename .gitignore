@@ -1,4 +1,5 @@
 settings.ini
 __pycache__
+/settings.py
 /venv
 /.idea
