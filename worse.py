@@ -1,6 +1,6 @@
 import api_sc
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
 import aiofiles
@@ -11,19 +11,21 @@ scb = api_sc.StalcraftAPI()
 
 async def get_auc_lot(item_id: str, server: str, lang: str):
     lots = await scb.get_auction_lots(item=item_id, region=server)
-    print(lots)
     mass = []
     for a in lots['lots']:
         date = datetime.strptime(a['endTime'] + "+0000",
                                  "%Y-%m-%dT%H:%M:%SZ%z") - datetime.now(timezone.utc).replace(microsecond=0)
+        hours = round(date.total_seconds() / 3600)
+        minutes = round(date.total_seconds() % 60)
+        date_str = "%d:%d" % (hours, minutes)
         mass.append([a['startPrice'],
                      a['buyoutPrice'],
-                     date])
+                     date_str])
     tab = PrettyTable()
     if lang == "EN":
-        tab.field_names = ["Start price", "Buy out price", "End time"]
+        tab.field_names = ["Start price", "Buy out price", "Time"]
     else:
-        tab.field_names = ["Ставка", "Выкуп", "До окончания"]
+        tab.field_names = ["Ставка", "Выкуп", "Время"]
     for a in mass:
         tab.add_row(a)
     return tab.get_string()
@@ -31,7 +33,6 @@ async def get_auc_lot(item_id: str, server: str, lang: str):
 
 async def get_history(item_id: str, server: str, lang: str, item_name: str, image_path: str):
     histo = await scb.get_price_history(item=item_id, region=server)
-    print(histo)
     y = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
     x = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
     for a in histo['prices']:
