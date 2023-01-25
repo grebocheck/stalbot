@@ -1,5 +1,5 @@
 import aiohttp
-import settings
+import config
 
 
 class StalcraftAPI:
@@ -7,8 +7,8 @@ class StalcraftAPI:
     url = "https://eapi.stalcraft.net"
 
     def __init__(self):
-        self.app_id = str(settings.NUM_ID)
-        self.app_secret = settings.SECRET_KEY
+        self.app_id = str(config.client_id)
+        self.app_secret = config.client_secret
         self.params = {
             "Client-Id": self.app_id,
             "Client-Secret": self.app_secret

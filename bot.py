@@ -11,14 +11,14 @@ from aiogram.dispatcher.filters import Text
 import aiogram.utils.exceptions
 
 import dbitem
-import settings
+import config
 import texts
 from loge import log_deb, log_err, log_inf
 import botdb
 import worse
 
 
-bot = Bot(token=settings.TELEGRAM_TOKEN, parse_mode=types.ParseMode.HTML)
+bot = Bot(token=config.telegram_token, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 
