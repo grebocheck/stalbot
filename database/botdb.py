@@ -3,7 +3,7 @@ from sqlalchemy import insert, update, delete
 from sqlalchemy.sql import select
 from datetime import datetime, timezone, timedelta
 
-bot_engine = create_engine('sqlite:///bot/data.db', echo=False)
+bot_engine = create_engine('sqlite:///database/bot/data.db', echo=False)
 bot_meta = MetaData()
 
 # Таблиця користувачів
