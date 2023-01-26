@@ -1,0 +1,11 @@
+```ru
+Добро пожаловать в наш сервис телефонных номеров Telegram! С нашим ботом вы можете легко искать и получать доступ к телефонным номерам со всех сайтов. Просто выставите нужные настройки и бот вам даст нужный номер. Благодарим вас за выбор нашего сервиса - мы здесь, чтобы помочь вам оставаться на связи с легкостью ! {dfsdfgdfsgggggggg}
+```
+
+```en
+Welcome to our Telegram phone number service! With our bot you can easily search and access phone numbers from all over the world. Just set the desired settings and the bot will give you the desired number. Thank you for choosing our service - we're here to help you stay connected with ease! {dfsdfgdfsgggggggg}
+```
+
+```uk
+Ласкаво просимо до нашого сервісу телефонних номерів Telegram! З нашим ботом ви можете легко шукати та отримувати доступ до телефонних номерів з усіх сайтів. Просто виставте потрібні налаштування та бот вам дасть потрібний номер. Дякуємо за вибір нашого сервісу - ми тут, щоб допомогти вам залишатися на зв'язку з легкістю! {dfsdfgdfsgggggggg}
+```

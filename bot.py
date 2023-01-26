@@ -1,29 +1,34 @@
 import os, time
 
+from aiogram.contrib.fsm_storage.mongo import MongoStorage
+
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, BotCommand, \
     ChatActions, video_note, ContentType
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 import aiogram.utils.exceptions
 
+from aiogram import filters as ft
+
 import database.dbitem as dbitem
 import config
-import language.texts as texts
 from additions.log import log_deb, log_err, log_inf
 import database.botdb as botdb
 import worse
+from additions.database import db
 
 import additions.stalApi as stalApi
+from additions.language import Language
 
 from forms import *
-from keyboards import *
 
+lng = Language()
 scb = stalApi.StalcraftAPI(client_id=config.client_id, client_secret=config.client_secret)
 
 bot = Bot(token=str(config.telegram_token), parse_mode=types.ParseMode.HTML)
-dp = Dispatcher(bot, storage=MemoryStorage())
+dp = Dispatcher(bot, storage=MongoStorage(uri=config.mongoConnectUrl, db_name=config.mongoStorageBase))
+
 
 
 def clear():
