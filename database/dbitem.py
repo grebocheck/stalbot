@@ -102,12 +102,12 @@ def get_item_image(my_item_id: str, server_name: str):
         for a in item_db_global:
             item_id = a["data"].split("/")[-1][:-5]
             if item_id == my_item_id:
-                return "dbitem/global" + a["icon"]
+                return "database/dbitem/global" + a["icon"]
     else:
         for a in item_db_ru:
             item_id = a["data"].split("/")[-1][:-5]
             if item_id == my_item_id:
-                return "dbitem/ru" + a["icon"]
+                return "database/dbitem/ru" + a["icon"]
 
 
 def is_it_artifact(my_item_id: str, server_name: str):
