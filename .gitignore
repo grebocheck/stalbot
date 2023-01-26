@@ -10,4 +10,5 @@ sc_api.py
 test.py
 test2.py
 test3.py
+/logs
 /log
