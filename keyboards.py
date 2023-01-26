@@ -15,11 +15,11 @@ kbLang.add(
 async def get_main_keyboard(user):
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
 
-    kb.add(KeyboardButton(await lng.trans('История цен📈', user)))
+    kb.add(KeyboardButton(await lng.trans('История цен 📈', user)))
 
     kb.add(
-        KeyboardButton(await lng.trans('О нас🔮', user)),
-        KeyboardButton(await lng.trans('Сменить язык🌐', user)),
+        KeyboardButton(await lng.trans('О нас 🔮', user)),
+        KeyboardButton(await lng.trans('Сменить язык 🌐', user)),
     )
     return kb
 
