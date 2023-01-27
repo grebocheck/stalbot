@@ -1,10 +1,11 @@
 from bot import *
 from config import available_languages
 from keyboards import *
+import filters as flt
 
 
 @dp.message_handler(state='*', commands='cancel')
-@dp.message_handler(Text(equals="Скасувати❌", ignore_case=True), state='*')
+@dp.message_handler(flt.transFilter('Cancel❌'), state='*')
 async def cancel_handler(message: types.Message, state: FSMContext):
     """
     Функція скасування будь-якої дії
@@ -33,7 +34,6 @@ async def process_start_command(message: types.Message, state: FSMContext):
     Стадія перша - запит на вибір мови з клавіатури
     """
     user = message.from_user
-
     #add user to database
     await db.users.update_one({'telegram_id': user.id},
                               {'$set': {'username': '@' + str(user.username)}},  # set username

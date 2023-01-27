@@ -3,6 +3,7 @@ import json
 import re
 from config import available_languages
 
+
 class Language:
 
 
@@ -34,7 +35,7 @@ class Language:
 
         text = re.sub(r"{.*?}", "{}", text)  # remove all text inside curly braces
 
-        print(f'text: {text}')
+        # print(f'text: {text}')
 
         # translate text from database of short msgs
         for text_db in self.all_text:  # go through short msgs in database
@@ -50,6 +51,7 @@ class Language:
                             found_text = found_text.format(args)
                     print(f'Found text: {found_text}')
                     return found_text  # return translation
+        
                         
     
 
