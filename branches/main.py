@@ -11,21 +11,15 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     """
     Функція скасування будь-якої дії
     """
-    # if botdb.extend_user(message.from_user.id):
-    #     user = message.from_user
-    # else:
-    #     await state.finish()
-    #     await message.reply("Тут текст /start", reply_markup=remove_keyboard)
-    #     return
     user = message.from_user
     current_state = await state.get_state()
     if current_state is None:
-        await message.answer(await lng.trans('Hello, choose your language {}, {}', user, [user.id, user.username]),
-                             reply_markup=kbLang)
+        await message.answer(await lng.trans('Действие отменено⛔️', user),
+                             reply_markup=await get_main_keyboard(user))
         return
     await state.finish()
-    await message.answer(await lng.trans('Hello, choose your language {}, {}', user, [user.id, user.username]),
-                         reply_markup=kbLang)
+    await message.answer(await lng.trans('Действие отменено⛔️', user),
+                         reply_markup=await get_main_keyboard(user))
 
 
 @dp.message_handler(state='*', commands=['start'])
@@ -35,7 +29,7 @@ async def process_start_command(message: types.Message, state: FSMContext):
     Стадія перша - запит на вибір мови з клавіатури
     """
     user = message.from_user
-    #add user to database
+    # add user to database
     await db.users.update_one({'telegram_id': user.id},
                               {'$set': {'username': '@' + str(user.username)}},  # set username
                               True)
@@ -55,25 +49,19 @@ async def cnangeService_complete(callback):
     await db.userSettings.update_one(
         {
             'telegram_id': callback.from_user.id
-            },
+        },
         {
             '$set': {
-                'language':choice
-                }
-            }, True)
+                'language': choice
+            }
+        }, True)
     # answer
-    # regions = await scb.get_regions()
-    regions = [
-        {'id': 'RU', 'name': 'RUSSIA'}, 
-        {'id': 'EU', 'name': 'EUROPE'}, 
-        {'id': 'NA', 'name': 'NORTH AMERICA'}, 
-        {'id': 'SEA', 'name': 'SOUTH EAST ASIA'}
-    ]
-    keyboard = await get_regions_keyboard(user, regions)
+    keyboard = await get_regions_keyboard()
     transText = await lng.full_trans('regions', user)
     await bot.delete_message(user.id, message_id=callback.message.message_id)
     await callback.answer(await lng.trans("Вы успешно изменили язык на", choice))
     await bot.send_message(user.id, transText, reply_markup=keyboard)
+
 
 @dp.callback_query_handler(ft.Text(startswith='rgn:'))
 async def cnangeRegion_complete(callback):
@@ -87,12 +75,12 @@ async def cnangeRegion_complete(callback):
     await db.userSettings.update_one(
         {
             'telegram_id': callback.from_user.id
-            },
+        },
         {
             '$set': {
-                'region':choice
-                }
-            }, True)
+                'region': choice
+            }
+        }, True)
     # answer
     keyboard = await get_main_keyboard(user)
     transText = await lng.full_trans('welcome', user)

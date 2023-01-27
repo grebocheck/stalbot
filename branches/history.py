@@ -1,8 +1,9 @@
 from bot import *
 from keyboards import *
+import filters as flt
 
 
-@dp.message_handler(lambda message: message.text == "Історія цін 📈")
+@dp.message_handler(flt.transFilter("Історія цін 📈"))
 async def process_choose_notif_mode_one(message: types.Message):
     user = message.from_user
     await Form_Hist.get_item.set()
