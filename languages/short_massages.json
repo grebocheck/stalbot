@@ -53,11 +53,31 @@
         "uk": "Ви успішно змінили сервіс на"
       }
     ],
-  "cancel": [
-    {
-      "ru": "Отмена❌",
-      "en": "Cancel❌",
-      "uk": "Скасувати❌"
-    }
-  ]
+    "others": [
+      {
+        "ru": "Отмена❌",
+        "en": "Cancel❌",
+        "uk": "Скасувати❌"
+      },
+      {
+        "ru": "Простите, но я не могу найти этот предмет\uD83D\uDE30",
+        "en": "Sorry, but I can't find this item\uD83D\uDE30",
+        "uk": "Вибачте, але я не можу знайти цей предмет\uD83D\uDE30"
+      },
+      {
+        "ru": "Введите название предмета\uD83D\uDCE6",
+        "en": "Enter the name of the item\uD83D\uDCE6",
+        "uk": "Введіть назву предмету\uD83D\uDCE6"
+      },
+      {
+        "ru": "История цен на {} на сервере {}\uD83D\uDCCA",
+        "en": "Price history of {} on server {}\uD83D\uDCCA",
+        "uk": "Історія цін на {} на сервері {}\uD83D\uDCCA"
+      },
+      {
+        "ru": "Цены на аукционе сервера %s сейчас на предмет %s ⚖\n\n`%s`",
+        "en": "Auction prices on server %s now on item %s ⚖\n\n`%s`",
+        "uk": "Ціни на аукціоні серверу %s зараз на предмет %s ⚖\n\n`%s`"
+      }
+    ]
 }

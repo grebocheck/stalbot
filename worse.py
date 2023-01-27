@@ -41,6 +41,11 @@ async def get_auc_lot(item_id: str, server: str, lang: str):
         if it_artefact:
             field_names.append("Qlt.")
         tab.field_names = field_names
+    elif lang == "uk":
+        field_names = ["Початкова ціна", "Викуп", "Час"]
+        if it_artefact:
+            field_names.append("Рідк.")
+        tab.field_names = field_names
     else:
         field_names = ["Ставка", "Выкуп", "Время"]
         if it_artefact:
@@ -101,6 +106,10 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
         plt.xlabel('Time')
         plt.ylabel('Price, rub')
         plt.title(f'Price of {item_name} on server {server}')
+    elif lang == "uk":
+        plt.xlabel('Час')
+        plt.ylabel('Ціна, руб')
+        plt.title(f'Ціна на {item_name} на сервері {server}')
     else:
         plt.xlabel('Время')
         plt.ylabel('Цена, руб')

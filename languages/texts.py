@@ -104,8 +104,8 @@ hist_text = {"RU": "История цен на %s на сервере %s📊",
 now_prices = {"RU": """Цены на аукционе сервера %s сейчас на предмет %s ⚖️
 
 `%s`""",
-              "EN": """Auction prices on server %s now on item %s ⚖️
-              
+              "EN": """Auction prices on server %s now on item %s ⚖
+
 `%s`"""}
 
 s = {"RU": "",
