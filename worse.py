@@ -36,7 +36,7 @@ async def get_auc_lot(item_id: str, server: str, lang: str):
             row.append(quality)
         mass.append(row)
     tab = PrettyTable()
-    if lang == "EN":
+    if lang == "en":
         field_names = ["Start price", "Out price", "Time"]
         if it_artefact:
             field_names.append("Qlt.")
@@ -97,7 +97,7 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
     plt.legend()
     plt.semilogy()
     plt.xticks(rotation=20)
-    if lang == "EN":
+    if lang == "en":
         plt.xlabel('Time')
         plt.ylabel('Price, rub')
         plt.title(f'Price of {item_name} on server {server}')

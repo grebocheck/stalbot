@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, \
     ReplyKeyboardRemove
 from bot import lng
 
-#Клавиатура смены языка:
+# Клавиатура смены языка:
 kbLang = InlineKeyboardMarkup()
 kbLangwrd = 'lng:'
 kbLang.add(
@@ -12,15 +12,31 @@ kbLang.add(
     InlineKeyboardButton('english 🇬🇧', callback_data=f'{kbLangwrd}en'),
 )
 
+
 async def get_main_keyboard(user):
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
 
-    kb.add(KeyboardButton(await lng.trans('История цен 📈', user)))
+    kb.add(
+        KeyboardButton(await lng.trans('История цен 📈', user)),
+        KeyboardButton(await lng.trans('Проверить цену💰', user))
+    )
 
     kb.add(
         KeyboardButton(await lng.trans('О нас 🔮', user)),
-        KeyboardButton(await lng.trans('Сменить язык 🌐', user)),
+        KeyboardButton(await lng.trans('Уведомления о выбросах🌋', user)),
     )
+
+    kb.add(
+        KeyboardButton(await lng.trans('Сменить язык 🌐', user)),
+        KeyboardButton(await lng.trans('Сменить сервер💻', user))
+    )
+    return kb
+
+
+async def get_cancel_keyboard(user):
+    kb = ReplyKeyboardMarkup(resize_keyboard=True)
+
+    kb.add(KeyboardButton(await lng.trans('Отмена❌', user)))
     return kb
 
 # Клавіатура меню

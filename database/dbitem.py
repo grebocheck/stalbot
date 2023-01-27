@@ -13,7 +13,7 @@ def global_server(serv: str) -> bool:
     :param serv: Назва серверу
     :return: Так чи Ні
     """
-    if serv == "RU":
+    if serv == "ru":
         return False
     else:
         return True
@@ -47,7 +47,7 @@ item_id_db_global = search_all_gloabal_item_id()
 item_id_db_ru = search_all_ru_item_id()
 
 
-def search_item_name_by_id(my_item_id: str, server_name: str):
+def search_item_name_by_id(my_item_id: str, server_name: str, lang: str):
     """
     Пошук назви предмета по його ID в базі данних
     :param server_name: Назва серверу
@@ -59,12 +59,18 @@ def search_item_name_by_id(my_item_id: str, server_name: str):
         for a in item_db_global:
             item_id = a["data"].split("/")[-1][:-5]
             if item_id == my_item_id:
-                return {"EN": a["name"]["lines"]["en"], "RU": a["name"]["lines"]["ru"]}
+                if lang == 'en':
+                    return a["name"]["lines"]["en"]
+                else:
+                    return a["name"]["lines"]["ru"]
     else:
         for a in item_db_ru:
             item_id = a["data"].split("/")[-1][:-5]
             if item_id == my_item_id:
-                return {"EN": a["name"]["lines"]["en"], "RU": a["name"]["lines"]["ru"]}
+                if lang == 'en':
+                    return a["name"]["lines"]["en"]
+                else:
+                    return a["name"]["lines"]["ru"]
 
 
 def search_item_id_by_name(my_item_name: str, server_name: str):
