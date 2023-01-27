@@ -92,8 +92,7 @@ class Language:
     async def get_user_lang(self, user):
         # get user language preferebly from database, otherwise from telegram user settings
         tg_lang = user.language_code[:2]  # get user telegram default language
-        bd_lang = await db.db.userSettings.find_one({'telegram_id': user.id})  # get language user language from database
-
+        bd_lang = await db.userSettings.find_one({'telegram_id': user.id})  # get language user language from database
         if bd_lang and bd_lang.get('language'):  # if user in database
             return bd_lang.get('language')
         elif tg_lang in available_languages:  # if user language is available
