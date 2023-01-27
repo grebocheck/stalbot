@@ -11,7 +11,7 @@ class transFilter(BoundFilter):
     async def check(self, msg: Message):
         user = msg.from_user
         text = await lng.trans(self.text_to_translate, user)
-        if text:
+        if text == msg.text:
             return True
         else:
             return False

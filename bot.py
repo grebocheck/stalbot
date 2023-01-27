@@ -28,7 +28,6 @@ bot = Bot(token=str(config.telegram_token), parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=MongoStorage(uri=config.mongoConnectUrl, db_name=config.mongoStorageBase))
 
 
-
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
     print('Updates were skipped successfully.')
