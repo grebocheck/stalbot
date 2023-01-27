@@ -18,13 +18,11 @@ import database.botdb as botdb
 import worse
 from additions.database import db
 
-import additions.stalApi as stalApi
 from additions.language import Language
 
 from forms import *
 
 lng = Language()
-scb = stalApi.StalcraftAPI(client_id=config.client_id, client_secret=config.client_secret)
 
 bot = Bot(token=str(config.telegram_token), parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=MongoStorage(uri=config.mongoConnectUrl, db_name=config.mongoStorageBase))

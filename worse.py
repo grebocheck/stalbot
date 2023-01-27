@@ -7,6 +7,7 @@ import os
 import database.dbitem as dbitem
 
 from bot import *
+from additions.apio import scb
 
 
 async def get_auc_lot(item_id: str, server: str, lang: str):
@@ -17,7 +18,7 @@ async def get_auc_lot(item_id: str, server: str, lang: str):
     :param lang: Мова інтерфейсу
     :return: повідомлення
     """
-    lots = await scb.get_auction_lots(item=item_id, region=server)
+    lots = await scb.get_auction_lots(item_id=item_id, region=server)
     mass = []
     it_artefact = dbitem.is_it_artifact(my_item_id=item_id, server_name=server)
     for a in lots['lots']:
@@ -60,7 +61,7 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
     :param image_path: Шлях до зображення предмету
     :return: Графік в вигляді зображення
     """
-    histo = await scb.get_price_history(item=item_id, region=server)
+    histo = await scb.get_auction_history(item_id=item_id, region=server)
     y = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
     x = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
     for a in histo['prices']:
