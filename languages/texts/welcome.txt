@@ -1,11 +1,29 @@
 ```ru
-Добро пожаловать в наш сервис телефонных номеров Telegram! С нашим ботом вы можете легко искать и получать доступ к телефонным номерам со всех сайтов. Просто выставите нужные настройки и бот вам даст нужный номер. Благодарим вас за выбор нашего сервиса - мы здесь, чтобы помочь вам оставаться на связи с легкостью ! {dfsdfgdfsgggggggg}
+Привет - привет!!!
+Тебя приветствует твой корманный проводник в зоне
+Что здесь можно:
+    Проверить цену на гаусс, но лучше не надо :)
+    Узнать когда будет выброс, 
+    к тому же через сколько начнёт бить и когда перестанет
+    Посмотреть историю цен в виде графика...
 ```
 
 ```en
-Welcome to our Telegram phone number service! With our bot you can easily search and access phone numbers from all over the world. Just set the desired settings and the bot will give you the desired number. Thank you for choosing our service - we're here to help you stay connected with ease! {dfsdfgdfsgggggggg}
+Hi Hi!!!
+You are welcomed by your pocket guide in the zone
+What is possible here:
+    Check the price for gauss, but it's better not to :)
+    Find out when there will be a emission, 
+    moreover, after how long it will start to beat and when it will stop
+    View price history as a graph...
 ```
 
 ```uk
-Ласкаво просимо до нашого сервісу телефонних номерів Telegram! З нашим ботом ви можете легко шукати та отримувати доступ до телефонних номерів з усіх сайтів. Просто виставте потрібні налаштування та бот вам дасть потрібний номер. Дякуємо за вибір нашого сервісу - ми тут, щоб допомогти вам залишатися на зв'язку з легкістю! {dfsdfgdfsgggggggg}
+Привіт привіт!!!
+Тебе вітає твій кишеньковий провідник у зоні
+Що тут можна:
+    Перевірити ціну на гаус, але краще не треба :)
+    Дізнатись коли буде викид, 
+    до того ж через скільки почне бити і коли перестане
+    Переглянути історію цін у вигляді графіка...
 ```

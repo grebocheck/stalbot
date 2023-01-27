@@ -2,6 +2,7 @@ from bot import *
 from config import available_languages
 from keyboards import *
 import filters as flt
+from additions.apio import scb
 
 
 @dp.message_handler(state='*', commands='cancel')
@@ -60,12 +61,44 @@ async def cnangeService_complete(callback):
                 'language':choice
                 }
             }, True)
-
     # answer
-    transText = await lng.full_trans('welcome', user, user.id)
+    # regions = await scb.get_regions()
+    regions = [
+        {'id': 'RU', 'name': 'RUSSIA'}, 
+        {'id': 'EU', 'name': 'EUROPE'}, 
+        {'id': 'NA', 'name': 'NORTH AMERICA'}, 
+        {'id': 'SEA', 'name': 'SOUTH EAST ASIA'}
+    ]
+    keyboard = await get_regions_keyboard(user, regions)
+    transText = await lng.full_trans('regions', user)
     await bot.delete_message(user.id, message_id=callback.message.message_id)
-    await callback.answer(await lng.trans("Вы успешно изменили сервис на", user))
-    await bot.send_message(user.id, transText, reply_markup=await get_main_keyboard(user))
+    await callback.answer(await lng.trans("Вы успешно изменили язык на", choice))
+    await bot.send_message(user.id, transText, reply_markup=keyboard)
+
+@dp.callback_query_handler(ft.Text(startswith='rgn:'))
+async def cnangeRegion_complete(callback):
+    user = callback.from_user
+    choice = callback.data.split('rgn:')[1]
+    # antihack check
+    if not choice in ['RU', 'EU', 'NA', 'SEA']:
+        await callback.answer('Ошибка выбора региона')
+
+    # insert choice into database
+    await db.userSettings.update_one(
+        {
+            'telegram_id': callback.from_user.id
+            },
+        {
+            '$set': {
+                'region':choice
+                }
+            }, True)
+    # answer
+    keyboard = await get_main_keyboard(user)
+    transText = await lng.full_trans('welcome', user)
+    await bot.delete_message(user.id, message_id=callback.message.message_id)
+    await callback.answer(await lng.trans("Вы успешно изменили регион на", user, choice))
+    await bot.send_message(user.id, transText, reply_markup=keyboard)
 
 # @dp.message_handler(content_types=ContentType.TEXT, state=Form_Reg.get_lang)
 # async def process_reg_two(message: types.Message, state: FSMContext):

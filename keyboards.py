@@ -32,6 +32,15 @@ async def get_main_keyboard(user):
     )
     return kb
 
+async def get_regions_keyboard(user, regions):
+    kb = InlineKeyboardMarkup(resize_keyboard=True)
+
+    kbRgnwrd = 'rgn:'
+    for region in regions:
+        kb.add(
+            InlineKeyboardButton(region['name'], callback_data=f'{kbRgnwrd}{region["id"]}'),
+        )
+    return kb
 
 async def get_cancel_keyboard(user):
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
