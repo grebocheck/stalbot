@@ -13,7 +13,7 @@ def global_server(serv: str) -> bool:
     :param serv: Назва серверу
     :return: Так чи Ні
     """
-    if serv == "ru":
+    if serv == "RU":
         return False
     else:
         return True
@@ -50,6 +50,7 @@ item_id_db_ru = search_all_ru_item_id()
 def search_item_name_by_id(my_item_id: str, server_name: str, lang: str):
     """
     Пошук назви предмета по його ID в базі данних
+    :param lang: Мова якою шукається
     :param server_name: Назва серверу
     :param my_item_id: Ідентифікатор предмету (XXXX)
     :return: Назва предмету на EN та RU

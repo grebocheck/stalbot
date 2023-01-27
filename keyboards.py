@@ -39,6 +39,9 @@ async def get_cancel_keyboard(user):
     kb.add(KeyboardButton(await lng.trans('Отмена❌', user)))
     return kb
 
+
+remove_keyboard = ReplyKeyboardRemove()
+
 # Клавіатура меню
 # menu_markup = {"EN": ReplyKeyboardMarkup(resize_keyboard=True, selective=True),
 #                "RU": ReplyKeyboardMarkup(resize_keyboard=True, selective=True)}

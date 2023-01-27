@@ -2,24 +2,28 @@ from bot import *
 from config import available_languages
 from keyboards import *
 
-# @dp.message_handler(state='*', commands='cancel')
-# @dp.message_handler(Text(equals=[texts.cancel_btn["EN"], texts.cancel_btn["RU"]], ignore_case=True), state='*')
-# async def cancel_handler(message: types.Message, state: FSMContext):
-#     """
-#     Функція скасування будь-якої дії
-#     """
-#     if botdb.extend_user(message.from_user.id):
-#         it_user = botdb.get_user(message.from_user.id)
-#     else:
-#         await state.finish()
-#         await message.reply(texts.need_reg, reply_markup=remove_mark)
-#         return
-#     current_state = await state.get_state()
-#     if current_state is None:
-#         await message.reply(texts.menu_text[it_user.lang], reply_markup=menu_markup[it_user.lang])
-#         return
-#     await state.finish()
-#     await message.reply(texts.cancel_success[it_user.lang], reply_markup=menu_markup[it_user.lang])
+
+@dp.message_handler(state='*', commands='cancel')
+@dp.message_handler(Text(equals="Скасувати❌", ignore_case=True), state='*')
+async def cancel_handler(message: types.Message, state: FSMContext):
+    """
+    Функція скасування будь-якої дії
+    """
+    # if botdb.extend_user(message.from_user.id):
+    #     user = message.from_user
+    # else:
+    #     await state.finish()
+    #     await message.reply("Тут текст /start", reply_markup=remove_keyboard)
+    #     return
+    user = message.from_user
+    current_state = await state.get_state()
+    if current_state is None:
+        await message.answer(await lng.trans('Hello, choose your language {}, {}', user, [user.id, user.username]),
+                             reply_markup=kbLang)
+        return
+    await state.finish()
+    await message.answer(await lng.trans('Hello, choose your language {}, {}', user, [user.id, user.username]),
+                         reply_markup=kbLang)
 
 
 @dp.message_handler(state='*', commands=['start'])

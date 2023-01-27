@@ -34,8 +34,8 @@ class StalcraftAPI:
         r = await self.__request_get(endpoint, self.authHeader)
         return r
 
-    async def get_auction_lots(self, item, region, additional=True, limit=20):
-        endpoint = f'{region}/auction/{item}/lots'
+    async def get_auction_lots(self, item_id, region, additional=True, limit=20):
+        endpoint = f'{region}/auction/{item_id}/lots'
         params = f'?limit={limit}&additional={additional}'
         endpoint += params
         r = await self.__request_get(endpoint, self.authHeader)
