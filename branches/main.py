@@ -23,6 +23,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(state='*', commands=['start'])
+@dp.message_handler(flt.transFilter('Сменить настройки ⚙️'))
 async def process_start_command(message: types.Message, state: FSMContext):
     """
     Стартова функція, розпочинає реєстрацію або повертає меню користувачу

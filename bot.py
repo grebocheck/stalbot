@@ -17,6 +17,7 @@ from additions.log import log_deb, log_err, log_inf
 import database.botdb as botdb
 import worse
 from additions.database import db
+from additions.user_data import get_user_server
 
 from additions.language import Language
 

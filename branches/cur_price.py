@@ -16,7 +16,7 @@ async def process_choose_notif_mode_two(message: types.Message, state: FSMContex
     user = message.from_user
     user_lang = await lng.get_user_lang(user)
     it_item = dbitem.search_item_id_by_name(message.text, user_lang)
-    user_server = "EUs"
+    user_server = await get_user_server(user)
     if it_item:
         await state.finish()
         image_path = dbitem.get_item_image(my_item_id=it_item, server_name=user_server)

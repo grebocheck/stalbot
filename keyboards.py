@@ -27,8 +27,7 @@ async def get_main_keyboard(user):
     )
 
     kb.add(
-        KeyboardButton(await lng.trans('Сменить язык 🌐', user)),
-        KeyboardButton(await lng.trans('Сменить сервер💻', user))
+        KeyboardButton(await lng.trans('Сменить настройки ⚙️', user)),
     )
     return kb
 

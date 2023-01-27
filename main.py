@@ -1,5 +1,5 @@
 from bot import *
-from branches import main, history, cur_price, emission, change_server, change_lang
+from branches import main, history, cur_price, emission
 from additions.apio import scb
 
 

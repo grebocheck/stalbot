@@ -15,7 +15,7 @@ async def process_choose_notif_mode_one(message: types.Message):
 async def process_choose_notif_mode_two(message: types.Message, state: FSMContext):
     user = message.from_user
     user_lang = await lng.get_user_lang(user)
-    user_server = "EU"
+    user_server = await get_user_server(user)
     it_item = dbitem.search_item_id_by_name(message.text, user_lang)
     if it_item:
         await state.finish()
