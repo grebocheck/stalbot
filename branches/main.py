@@ -6,7 +6,7 @@ from additions.apio import scb
 
 
 @dp.message_handler(state='*', commands='cancel')
-@dp.message_handler(flt.transFilter('Cancel❌'), state='*')
+@dp.callback_query_handler(ft.Text(startswith='cancel'), state='*')
 async def cancel_handler(message: types.Message, state: FSMContext):
     """
     Функція скасування будь-якої дії
@@ -14,12 +14,12 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     user = message.from_user
     current_state = await state.get_state()
     if current_state is None:
-        await message.answer(await lng.trans('Действие отменено⛔️', user),
-                             reply_markup=await get_main_keyboard(user))
+        await bot.send_message(user.id, await lng.trans('Действие отменено⛔️', user),
+                               reply_markup=await get_main_keyboard(user))
         return
     await state.finish()
-    await message.answer(await lng.trans('Действие отменено⛔️', user),
-                         reply_markup=await get_main_keyboard(user))
+    await bot.send_message(user.id, await lng.trans('Действие отменено⛔️', user),
+                           reply_markup=await get_main_keyboard(user))
 
 
 @dp.message_handler(state='*', commands=['start'])

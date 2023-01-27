@@ -53,9 +53,9 @@ async def get_regions_keyboard():
 
 
 async def get_cancel_keyboard(user):
-    kb = ReplyKeyboardMarkup(resize_keyboard=True)
+    kb = InlineKeyboardMarkup(resize_keyboard=True)
 
-    kb.add(KeyboardButton(await lng.trans('Отмена❌', user)))
+    kb.add(InlineKeyboardButton(await lng.trans('Отмена❌', user), callback_data="cancel"))
     return kb
 
 
