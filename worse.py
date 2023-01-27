@@ -1,6 +1,7 @@
 from datetime import datetime, timezone, timedelta
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
+import numpy as np
 import aiofiles
 import os
 
@@ -10,9 +11,10 @@ from bot import *
 from additions.apio import scb
 
 
-async def get_auc_lot(item_id: str, server: str, lang: str):
+async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str):
     """
     Функція обробник, формує відповіть з апі в повідомлення для бота
+    :param image_path: Назва предмету
     :param item_id: Ідентифікатор предмету (XXXX)
     :param server: Назва серверу
     :param lang: Мова інтерфейсу
@@ -35,25 +37,36 @@ async def get_auc_lot(item_id: str, server: str, lang: str):
                 quality = a['additional']['qlt']
             row.append(quality)
         mass.append(row)
-    tab = PrettyTable()
     if lang == "en":
         field_names = ["Start price", "Out price", "Time"]
         if it_artefact:
             field_names.append("Qlt.")
-        tab.field_names = field_names
     elif lang == "uk":
         field_names = ["Початкова ціна", "Викуп", "Час"]
         if it_artefact:
             field_names.append("Рідк.")
-        tab.field_names = field_names
     else:
         field_names = ["Ставка", "Выкуп", "Время"]
         if it_artefact:
             field_names.append("Ред.")
-        tab.field_names = field_names
-    for a in mass:
-        tab.add_row(a)
-    return tab.get_string()
+    fig, axs = plt.subplots()
+    fig.patch.set_visible(False)
+    axs.axis('tight')
+    axs.axis('off')
+    fig.tight_layout()
+    axs.table(cellText=mass, colLabels=field_names, loc='center')
+    ax = plt.gca()
+    im = plt.imread(image_path)
+    ax.figure.figimage(im,
+                       ax.bbox.xmax // 2 - im.shape[0] // 2,
+                       ax.bbox.ymax // 2 - im.shape[1] // 2,
+                       alpha=.50, zorder=1)
+    plt.savefig("table.png")
+    plt.close()
+    async with aiofiles.open("table.png", "rb") as f:
+        img = await f.read()
+    os.remove("table.png")
+    return img
 
 
 async def get_history(item_id: str, server: str, lang: str, item_name: str, image_path: str):

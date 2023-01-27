@@ -125,7 +125,7 @@ def is_it_artifact(my_item_id: str, server_name: str):
     :return: Так чи Ні
     """
     name = get_item_image(my_item_id, server_name)
-    status = name.split("/")[3]
+    status = name.split("/")[4]
     if status == "artefact":
         return True
     else:
