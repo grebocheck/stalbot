@@ -34,7 +34,7 @@ async def process_start_command(message: types.Message, state: FSMContext):
     await db.users.update_one({'telegram_id': user.id},
                               {'$set': {'username': '@' + str(user.username)}},  # set username
                               True)
-    await message.answer(await lng.trans('Hello, choose your language {}, {}', user, [user.id, user.username]),
+    await message.answer(await lng.trans('Hello, choose your language, {}', user, [user.username]),
                          reply_markup=kbLang)
 
 
@@ -83,10 +83,33 @@ async def cnangeRegion_complete(callback):
             }
         }, True)
     # answer
+    await bot.delete_message(user.id, message_id=callback.message.message_id)
+    text_a = await lng.trans("Вы успешно изменили регион на {}", user, choice)
+    text_b = await lng.trans("Теперь можете включить или отключить уведомления о выбросах", user)
+    texte = text_a + "\n\n" + text_b
+    await bot.send_message(user.id, texte, reply_markup=await get_emission_keyboard(user))
+
+
+@dp.callback_query_handler(ft.Text(startswith='emi:'))
+async def cnange_emission_callback(callback: types.CallbackQuery):
+    user = callback.from_user
+    choice = callback.data.split('emi:')[1]
+    if choice == "0":
+        emiss = False
+    else:
+        emiss = True
+    await db.userSettings.update_one(
+        {
+            'telegram_id': callback.from_user.id
+        },
+        {
+            '$set': {
+                'emission': emiss
+            }
+        }, True)
     keyboard = await get_main_keyboard(user)
     transText = await lng.full_trans('welcome', user)
     await bot.delete_message(user.id, message_id=callback.message.message_id)
-    await callback.answer(await lng.trans("Вы успешно изменили регион на", user, choice))
     await bot.send_message(user.id, transText, reply_markup=keyboard)
 
 # @dp.message_handler(content_types=ContentType.TEXT, state=Form_Reg.get_lang)

@@ -22,11 +22,6 @@ async def get_main_keyboard(user):
     )
 
     kb.add(
-        KeyboardButton(await lng.trans('О нас 🔮', user)),
-        KeyboardButton(await lng.trans('Уведомления о выбросах🌋', user)),
-    )
-
-    kb.add(
         KeyboardButton(await lng.trans('Сменить настройки ⚙️', user)),
     )
     return kb
@@ -56,6 +51,18 @@ async def get_cancel_keyboard(user):
     kb = InlineKeyboardMarkup(resize_keyboard=True)
 
     kb.add(InlineKeyboardButton(await lng.trans('Отмена❌', user), callback_data="cancel"))
+    return kb
+
+
+async def get_emission_keyboard(user):
+    kb = InlineKeyboardMarkup(resize_keyboard=True)
+    kbRgnwrd = 'emi:'
+    kb.add(
+        InlineKeyboardButton(await lng.trans('Включить✅', user),
+                             callback_data=f'{kbRgnwrd}1'),
+        InlineKeyboardButton(await lng.trans('Отключить❌', user),
+                             callback_data=f'{kbRgnwrd}0')
+    )
     return kb
 
 

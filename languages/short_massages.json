@@ -28,9 +28,9 @@
     ],
     "hello": [
       {
-        "ru": "Привет, выбери свой язык {language}, {language}",
-        "en": "Hello, choose your language {language}, {language}",
-        "uk": "Привіт, обери свою мову {language}, {language}"
+        "ru": "Привет, выбери свой язык, {}",
+        "en": "Hello, choose your language, {}",
+        "uk": "Привіт, обери свою мову, {}"
       },
       {
         "ru": "Привет",
@@ -43,9 +43,9 @@
         "uk": "До побачення"
       },
       {
-        "ru": "Вы успешно изменили сервис на",
-        "en": "You have successfully changed the service to",
-        "uk": "Ви успішно змінили сервіс на"
+        "ru": "Вы успешно изменили регион на {}",
+        "en": "You have successfully changed the region to {}",
+        "uk": "Ви успішно змінили регіон на {}"
       }
     ],
     "others": [
@@ -88,6 +88,21 @@
         "ru": "Выберите сервер\uD83D\uDCBB",
         "en": "Select a server\uD83D\uDCBB",
         "uk": "Оберіть сервер\uD83D\uDCBB"
+      },
+      {
+        "ru": "Включить✅",
+        "en": "Turn on✅",
+        "uk": "Увімкнути✅"
+      },
+      {
+        "ru": "Отключить❌",
+        "en": "Turn off❌",
+        "uk": "Вимкнути❌"
+      },
+      {
+        "ru": "Теперь можете включить или отключить уведомления о выбросах",
+        "en": "You can now enable or disable emission notifications",
+        "uk": "Тепер можете ввімкнути або вимкнути повідомлення про викиди"
       }
     ]
 }

@@ -4,7 +4,7 @@ import filters as flt
 
 
 @dp.message_handler(flt.transFilter("Історія цін 📈"))
-async def process_choose_notif_mode_one(message: types.Message):
+async def process_history_one(message: types.Message):
     user = message.from_user
     await Form_Hist.get_item.set()
     await message.answer(await lng.trans("Введите название предмета📦", user),
@@ -12,7 +12,7 @@ async def process_choose_notif_mode_one(message: types.Message):
 
 
 @dp.message_handler(content_types=ContentType.TEXT, state=Form_Hist.get_item)
-async def process_choose_notif_mode_two(message: types.Message, state: FSMContext):
+async def process_history_two(message: types.Message, state: FSMContext):
     user = message.from_user
     user_lang = await lng.get_user_lang(user)
     user_server = await get_user_server(user)
