@@ -66,6 +66,16 @@ async def get_emission_keyboard(user):
     return kb
 
 
+async def get_emission_close_keyboard(user):
+    kb = InlineKeyboardMarkup(resize_keyboard=True)
+    kbRgnwrd = 'emi:'
+    kb.add(
+        InlineKeyboardButton(await lng.trans('Отключить❌', user),
+                             callback_data=f'{kbRgnwrd}0')
+    )
+    return kb
+
+
 remove_keyboard = ReplyKeyboardRemove()
 
 # Клавіатура меню

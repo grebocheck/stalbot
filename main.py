@@ -1,6 +1,7 @@
 from bot import *
-from branches import main, history, cur_price
+from branches import main, history, cur_price, emission
 from additions.apio import scb
+import threading
 
 
 #init
@@ -16,6 +17,7 @@ if __name__ == "__main__":
     while True:
         try:
             log_inf("Бот запущений!")
+            threading.Thread(target=emission.emission_loop, daemon=True).start()
             executor.start_polling(dp, on_startup=initialize, skip_updates=True)
         except Exception as ex:
             log_err(str(ex))
