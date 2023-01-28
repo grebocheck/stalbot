@@ -6,13 +6,13 @@ import filters as flt
 from additions.apio import scb
 
 
-async def emission_logger():
-    while True:
-        for a in regions:
-            region = a['id']
+async def emission_logger(region):
+    try:
+        log_inf("RUN EMISSION LOOP " + region)
+        while True:
             emiss = await scb.get_emission(region=region)
             if 'currentStart' not in emiss:
-                await asyncio.sleep(30)
+                await asyncio.sleep(100)
                 continue
             users = await get_all_users_emission()
             for user in users:
@@ -22,12 +22,8 @@ async def emission_logger():
                 await bot.send_message(await lng.trans("На сервере {} начался выброс🌩", user, user_server),
                                        reply_markup=await get_emission_close_keyboard(user))
             await asyncio.sleep(2.5*60*60)
+    except Exception as ex:
+        log_err(str(ex))
 
-
-def emission_loop():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(emission_logger())
-    loop.close()
 
 
