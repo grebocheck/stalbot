@@ -29,6 +29,5 @@ async def process_history_two(message: types.Message, state: FSMContext):
                                                                 [item_name, user_server]),
                                   parse_mode="Markdown", reply_markup=await get_main_keyboard(user))
     else:
-        await bot.delete_message(message.chat.id, message_id=message.message_id)
         await message.reply(await lng.trans("Простите, но я не могу найти этот предмет😰", user),
                             reply_markup=await get_cancel_keyboard(user))

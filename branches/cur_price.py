@@ -38,7 +38,6 @@ async def process_price_two(message: types.Message, state: FSMContext):
             return
         else:
             return await message.reply(await lng.trans("На аукционе нет лотов для товара: {}", user, item_name))
-    await bot.delete_message(message.chat.id, message_id=message.message_id)
     await message.reply(await lng.trans("Простите, но я не могу найти этот предмет😰", user),
                         reply_markup=await get_cancel_keyboard(user))
 
