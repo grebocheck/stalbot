@@ -65,6 +65,11 @@
         "uk": "Вибачте, але я не можу знайти цей предмет\uD83D\uDE30"
       },
       {
+        "ru": "На аукционе нет лотов для товара: {}",
+        "en": "There are no lots for the product at the auction: {}",
+        "uk": "На аукціоні немає лотів для товару: {}"
+      },
+      {
         "ru": "Введите название предмета\uD83D\uDCE6",
         "en": "Enter the name of the item\uD83D\uDCE6",
         "uk": "Введіть назву предмету\uD83D\uDCE6"

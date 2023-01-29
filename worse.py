@@ -21,6 +21,8 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str):
     :return: повідомлення
     """
     lots = await scb.get_auction_lots(item_id=item_id, region=server)
+    if lots.get('total') == 0:
+        return None
     mass = []
     it_artefact = dbitem.is_it_artifact(my_item_id=item_id, server_name=server)
     for a in lots['lots']:

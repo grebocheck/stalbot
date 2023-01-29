@@ -11,9 +11,9 @@ async def initialize(data):
     log_inf(f'ID: {info["id"]}')
     log_inf(f'Username: {info["username"]}')
     await scb.run()
-    for a in keyboards.regions:
-        region = a['id']
-        asyncio.ensure_future(emission.emission_logger(region=region))
+    # for a in keyboards.regions:
+    #     region = a['id']
+    #     asyncio.ensure_future(emission.emission_logger(region=region))
 
 
 # logging

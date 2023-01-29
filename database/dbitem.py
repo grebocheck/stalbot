@@ -13,7 +13,7 @@ def global_server(serv: str) -> bool:
     :param serv: Назва серверу
     :return: Так чи Ні
     """
-    if serv == "RU":
+    if serv == "ru":
         return False
     else:
         return True
@@ -81,18 +81,20 @@ def search_item_id_by_name(my_item_name: str, server_name: str):
     :param my_item_name: Назва предмету
     :return: Ідентифікатор предмету (XXXX) або None в випадку якщо предмету немає
     """
+
+    my_item_name = my_item_name.lower()
     gl_server = global_server(server_name)
     if gl_server:
         for a in item_db_global:
             item_name_ru = a["name"]["lines"]["ru"]
             item_name_en = a["name"]["lines"]["en"]
-            if my_item_name.lower() in item_name_ru.lower() or my_item_name.lower() in item_name_en.lower():
+            if item_name_en.lower().find(my_item_name) != -1 or item_name_ru.lower().find(my_item_name) != -1:
                 return a["data"].split("/")[-1][:-5]
     else:
         for a in item_db_ru:
-            item_name_ru = a["name"]["lines"]["ru"]
+            item_name_ru = a["name"]["lines"]["ru"].lower()
             item_name_en = a["name"]["lines"]["en"]
-            if my_item_name.lower() in item_name_ru.lower() or my_item_name.lower() in item_name_en.lower():
+            if item_name_en.lower().find(my_item_name) != -1 or item_name_ru.lower().find(my_item_name) != -1:
                 return a["data"].split("/")[-1][:-5]
     return None
 
