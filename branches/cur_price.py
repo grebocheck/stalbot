@@ -21,12 +21,21 @@ async def process_price_two(message: types.Message, state: FSMContext):
         await state.finish()
         image_path = dbitem.get_item_image(my_item_id=it_item, server_name=user_server)
         item_name = dbitem.search_item_name_by_id(it_item, server_name=user_server, lang=user_lang)
-        plot = await worse.get_auc_lot(item_id=it_item, server=user_server,
-                                       lang=user_lang, image_path=image_path, item_name=item_name)
+        plot, back_btn, next_btn = await worse.get_auc_lot(item_id=it_item, server=user_server,
+                                                           lang=user_lang, image_path=image_path,
+                                                           page=0, item_name=item_name,
+                                                           select="buyout_price", order=True)
         if plot:
-            return await bot.send_photo(user.id, plot, caption=await lng.trans("Цены на аукционе сервера {} сейчас на предмет {} ⚖", user,
-                                                                    [user_server, item_name]),
-                                    parse_mode="Markdown", reply_markup=await get_main_keyboard(user))
+            keyboard = await get_cur_price_keyboard(next_btn=next_btn, back_btn=back_btn, page=0,
+                                                    item=it_item, select="buyout_price", order=True,
+                                                    user=user)
+            await message.reply_photo(plot, caption=await lng.trans(
+                "Цены на аукционе сервера {} сейчас на предмет {} ⚖", user,
+                [user_server, item_name]),
+                                      parse_mode="Markdown", reply_markup=keyboard)
+            plot.close()
+            os.remove("table.png")
+            return
         else:
             return await message.reply(await lng.trans("На аукционе нет лотов для товара: {}", user, item_name))
     await message.reply(await lng.trans("Простите, но я не могу найти этот предмет😰", user),
@@ -40,18 +49,37 @@ async def cnange_emission_callback(callback: types.CallbackQuery):
     user_server = await get_user_server(user)
     choice = callback.data.split(':')[1]
     page = int(callback.data.split(':')[2])
-    if choice == '1':
-        page += 1
-    else:
-        page -= 1
     it_item = callback.data.split(':')[3]
+    select = callback.data.split(':')[4]
+    order_call = callback.data.split(':')[5]
+    if order_call == '1':
+        order = True
+    else:
+        order = False
+
+    if choice == 'next':
+        page += 1
+    elif choice == 'back':
+        page -= 1
+    elif choice == "asc":
+        order = False
+    elif choice == "desc":
+        order = True
+    else:
+        select = choice
     image_path = dbitem.get_item_image(my_item_id=it_item, server_name=user_server)
     item_name = dbitem.search_item_name_by_id(it_item, server_name=user_server, lang=user_lang)
     plot, back_btn, next_btn = await worse.get_auc_lot(item_id=it_item, server=user_server,
-                                                       lang=user_lang, image_path=image_path, page=page)
+                                                       lang=user_lang, image_path=image_path,
+                                                       page=page, item_name=item_name,
+                                                       select=select, order=order)
     if plot:
-        keyboard = await get_cur_price_keyboard(next_btn=next_btn, back_btn=back_btn, page=page, item=it_item)
-        await callback.message.edit_media(media=types.InputMediaPhoto(plot),
+        keyboard = await get_cur_price_keyboard(next_btn=next_btn, back_btn=back_btn, page=page,
+                                                item=it_item, select=select, order=order,
+                                                user=user)
+        text = await lng.trans(
+            "Цены на аукционе сервера {} сейчас на предмет {} ⚖", user, [user_server, item_name])
+        await callback.message.edit_media(media=types.InputMediaPhoto(plot, caption=text),
                                           reply_markup=keyboard)
         plot.close()
         os.remove("table.png")

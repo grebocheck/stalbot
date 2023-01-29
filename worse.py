@@ -2,8 +2,8 @@ from datetime import datetime, timezone, timedelta
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image, ImageFont, ImageDraw, ImageOps
 import aiofiles
-from PIL import Image,ImageFont, ImageDraw,ImageOps
 import os
 
 import database.dbitem as dbitem
@@ -12,28 +12,39 @@ from bot import *
 from additions.apio import scb
 
 
-async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str, item_name):
+async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
+                      item_name: str, page: int, order: bool, select: str):
     """
     Функція обробник, формує відповіть з апі в повідомлення для бота
-    :param image_path: Назва предмету
+    :param select: Тип сортування
+    :param order: По зростанню чи спаданню
+    :param item_name: Назва предмету
+    :param page: номер сторінки
+    :param image_path: Шлях до зображення предмету
     :param item_id: Ідентифікатор предмету (XXXX)
     :param server: Назва серверу
     :param lang: Мова інтерфейсу
     :return: повідомлення
     """
-    LEN_TABLE = 20
+    LEN_TABLE = 5
     limit = LEN_TABLE + 1
-    lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit)
+    lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit,
+                                      offset=page * LEN_TABLE, order=order, select=select)
     if len(lots['lots']) == limit:
         next_btn = True
     else:
         next_btn = False
     if lots.get('total') == 0:
-        return None
-    img = Image.open('images/pdaRu.png').convert("RGB")
+        return [None, False, False]
+    if lang == 'ru':
+        img = Image.open('images/pdaRu.png').convert("RGB")
+    elif lang == 'uk':
+        img = Image.open('images/pdaUa.png').convert("RGB")
+    else:
+        img = Image.open('images/pdaEn.png').convert("RGB")
     item_image = Image.open(image_path).convert("RGBA").resize((80, 80))
     for iter in range(5):
-        img.paste(item_image, (51, 101 + 99*iter), item_image)
+        img.paste(item_image, (51, 101 + 99 * iter), item_image)
     item_image.close()
 
     font = ImageFont.truetype("images/Roboto-Medium.ttf", size=25)
@@ -45,50 +56,51 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str, ite
                                  "%Y-%m-%dT%H:%M:%SZ%z") - datetime.now(timezone.utc).replace(microsecond=0)
         seconds = round(date.total_seconds())
         hours = round(seconds // 3600)
-        minutes = round((seconds-hours*3600) // 60)
-        sec = seconds - hours*3600 - minutes*60
+        minutes = round((seconds - hours * 3600) // 60)
+        sec = seconds - hours * 3600 - minutes * 60
 
-        hours = f'0{hours}'if len(str(hours))==1 else str(hours)
-        minutes = f'0{minutes}'if len(str(minutes))==1 else str(minutes)
-        sec = f'0{sec}'if len(str(sec))==1 else str(sec)
-        date_str = f"{hours}:{minutes} {sec} с"
+        date_str = "%02d:%02d %02d с" % (hours, minutes, sec)
 
         startPrice = lot['startPrice']
         buyoutPrice = lot['buyoutPrice']
+
+        if buyoutPrice == 0:
+            buyoutPrice = "---"
 
         startPrice_H, startPrice_W = bigFont.getsize(str(startPrice))
         buyoutPrice_H, buyoutPrice_W = bigFont.getsize(str(buyoutPrice))
 
         quality = 0
+        item_name_tab = item_name
         if it_artefact:
             if 'qlt' not in lot['additional'] or lot['additional']['qlt'] == 0:
                 quality = 0
             else:
                 quality = lot['additional']['qlt']
-            if lot['additional'].get('ptn'):
-                item_name = f'{item_name} | +{lot["additional"].get("ptn")}'
+            if 'ptn' in lot['additional']:
+                item_name_tab = f'{item_name} | +{lot["additional"]["ptn"]}'
+
         quality_color = {
-            0:(140, 140, 140),
-            1:(0, 200, 50),
-            2:(0, 100, 200),
-            3:(156, 0, 156),
-            4:(200, 0, 0),
-            5:(200, 200, 0),
+            0: (140, 140, 140),
+            1: (0, 200, 50),
+            2: (0, 100, 200),
+            3: (156, 0, 156),
+            4: (200, 0, 0),
+            5: (200, 200, 0),
         }
 
-        idraw.text((165, 111 + 99*num), item_name, font=font, fill=quality_color.get(quality))
-        idraw.text((165, 150 + 99*num), date_str, font=font, fill=(200, 200, 0))
+        idraw.text((165, 111 + 99 * num), item_name_tab, font=font, fill=quality_color.get(quality))
+        idraw.text((165, 150 + 99 * num), date_str, font=font, fill=(200, 200, 0))
 
-        idraw.text((460-startPrice_H // 2, 122 + 99*num), str(startPrice), font=bigFont, fill=(140, 140, 140))
-        idraw.text((620-buyoutPrice_H // 2, 122 + 99*num), str(buyoutPrice), font=bigFont, fill=(140, 140, 140))
+        idraw.text((460 - startPrice_H // 2, 122 + 99 * num), str(startPrice), font=bigFont, fill=(140, 140, 140))
+        idraw.text((620 - buyoutPrice_H // 2, 122 + 99 * num), str(buyoutPrice), font=bigFont, fill=(140, 140, 140))
         if num >= 4:
             break
-    path = f'images/pdases/{item_id}.png'
-    img.save(path); img.close()
-    async with aiofiles.open(path, "rb") as f:
-        img = await f.read()
-    os.remove(path)
-    return img
+    path = f'table.png'
+    img.save(path)
+    img.close()
+    file = open("table.png", "rb")
+    return [file, back_btn, next_btn]
 
 
 async def get_history(item_id: str, server: str, lang: str, item_name: str, image_path: str):

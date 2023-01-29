@@ -76,18 +76,52 @@ async def get_emission_close_keyboard(user):
     return kb
 
 
-async def get_cur_price_keyboard(next_btn: bool, back_btn: bool, page: int, item: str):
+async def get_cur_price_keyboard(user, next_btn: bool, back_btn: bool, order: bool,
+                                 page: int, item: str, select: str):
     kb = InlineKeyboardMarkup(resize_keyboard=True)
     kbRgnwrd = 'cur:'
     btns = []
+    btns_foot = []
+    if order:
+        order_call = 1
+    else:
+        order_call = 0
     if back_btn:
-        button_back = InlineKeyboardButton("⬅️", callback_data=f'{kbRgnwrd}0:{page}:{item}')
+        button_back = InlineKeyboardButton("◀️",
+                                           callback_data=f'{kbRgnwrd}back:{page}:{item}:{select}:{order_call}')
         btns.append(button_back)
     if next_btn:
-        button_next = InlineKeyboardButton("➡️", callback_data=f'{kbRgnwrd}1:{page}:{item}')
+        button_next = InlineKeyboardButton("▶️",
+                                           callback_data=f'{kbRgnwrd}next:{page}:{item}:{select}:{order_call}')
         btns.append(button_next)
+
+    if order:
+        btns.append(InlineKeyboardButton("🔼",
+                                         callback_data=f'{kbRgnwrd}asc:{page}:{item}:{select}:{order_call}'))
+    else:
+        btns.append(InlineKeyboardButton("🔽",
+                                         callback_data=f'{kbRgnwrd}desc:{page}:{item}:{select}:{order_call}'))
+
+    buyout_name = await lng.trans("Выкуп", user)
+    time_name = await lng.trans("Время", user)
+    bid_name = await lng.trans("Ставка", user)
+    if select == "buyout_price":
+        buyout_name += "💠"
+    elif select == "time_left":
+        time_name += "💠"
+    elif select == "current_price":
+        bid_name += "💠"
+
+    btns_foot.append(InlineKeyboardButton(buyout_name,
+                                          callback_data=f'{kbRgnwrd}buyout_price:{page}:{item}:{select}:{order_call}'))
+    btns_foot.append(InlineKeyboardButton(time_name,
+                                          callback_data=f'{kbRgnwrd}time_left:{page}:{item}:{select}:{order_call}'))
+    btns_foot.append(InlineKeyboardButton(bid_name,
+                                          callback_data=f'{kbRgnwrd}current_price:{page}:{item}:{select}:{order_call}'))
+
     if btns:
         kb.add(*btns)
+        kb.add(*btns_foot)
         return kb
     else:
         return None
