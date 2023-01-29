@@ -12,9 +12,12 @@ from bot import *
 from additions.apio import scb
 
 
-async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str, item_name: str, page: int):
+async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
+                      item_name: str, page: int, order: bool, select: str):
     """
     Функція обробник, формує відповіть з апі в повідомлення для бота
+    :param select: Тип сортування
+    :param order: По зростанню чи спаданню
     :param item_name: Назва предмету
     :param page: номер сторінки
     :param image_path: Шлях до зображення предмету
@@ -25,7 +28,8 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str, ite
     """
     LEN_TABLE = 5
     limit = LEN_TABLE + 1
-    lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit, offset=page * LEN_TABLE)
+    lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit,
+                                      offset=page * LEN_TABLE, order=order, select=select)
     if len(lots['lots']) == limit:
         next_btn = True
     else:
