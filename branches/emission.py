@@ -12,7 +12,7 @@ async def emission_logger(region):
         while True:
             emiss = await scb.get_emission(region=region)
             if 'currentStart' not in emiss:
-                await asyncio.sleep(100)
+                await asyncio.sleep(10)
                 continue
             log_deb(f"EMISSION IN {region}")
             users = await get_all_users_emission()
