@@ -22,9 +22,9 @@ async def process_price_two(message: types.Message, state: FSMContext):
         image_path = dbitem.get_item_image(my_item_id=it_item, server_name=user_server)
         item_name = dbitem.search_item_name_by_id(it_item, server_name=user_server, lang=user_lang)
         plot = await worse.get_auc_lot(item_id=it_item, server=user_server,
-                                       lang=user_lang, image_path=image_path)
+                                       lang=user_lang, image_path=image_path, item_name=item_name)
         if plot:
-            return await message.reply_photo(plot, caption=await lng.trans("Цены на аукционе сервера {} сейчас на предмет {} ⚖", user,
+            return await bot.send_photo(user.id, plot, caption=await lng.trans("Цены на аукционе сервера {} сейчас на предмет {} ⚖", user,
                                                                     [user_server, item_name]),
                                     parse_mode="Markdown", reply_markup=await get_main_keyboard(user))
         else:

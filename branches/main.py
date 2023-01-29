@@ -7,7 +7,7 @@ from additions.apio import scb
 
 @dp.message_handler(state='*', commands='cancel')
 @dp.callback_query_handler(ft.Text(startswith='cancel'), state='*')
-async def cancel_handler(message: types.Message | types.CallbackQuery, state: FSMContext):
+async def cancel_handler(message, state: FSMContext):
     """
     Функція скасування будь-якої дії
     """

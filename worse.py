@@ -3,6 +3,7 @@ from prettytable import PrettyTable
 import matplotlib.pyplot as plt
 import numpy as np
 import aiofiles
+from PIL import Image,ImageFont, ImageDraw,ImageOps
 import os
 
 import database.dbitem as dbitem
@@ -11,7 +12,7 @@ from bot import *
 from additions.apio import scb
 
 
-async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str):
+async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str, item_name):
     """
     Функція обробник, формує відповіть з апі в повідомлення для бота
     :param image_path: Назва предмету
@@ -23,51 +24,106 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str):
     lots = await scb.get_auction_lots(item_id=item_id, region=server)
     if lots.get('total') == 0:
         return None
-    mass = []
+    img = Image.open('images/pdaRu.png').convert("RGB")
+    item_image = Image.open(image_path).convert("RGBA").resize((80, 80))
+    for iter in range(5):
+        img.paste(item_image, (51, 101 + 99*iter), item_image)
+    item_image.close()
+
+    font = ImageFont.truetype("images/Roboto-Medium.ttf", size=25)
+    bigFont = ImageFont.truetype("images/Roboto-Medium.ttf", size=30)
     it_artefact = dbitem.is_it_artifact(my_item_id=item_id, server_name=server)
-    for a in lots['lots']:
-        date = datetime.strptime(a['endTime'] + "+0000",
+    idraw = ImageDraw.Draw(img)
+    for num, lot in enumerate(lots['lots']):
+        date = datetime.strptime(lot['endTime'] + "+0000",
                                  "%Y-%m-%dT%H:%M:%SZ%z") - datetime.now(timezone.utc).replace(microsecond=0)
-        hours = round(date.total_seconds() / 3600)
-        minutes = round(date.total_seconds() % 60)
-        date_str = "%d:%d" % (hours, minutes)
-        row = [a['startPrice'], a['buyoutPrice'], date_str]
+        seconds = round(date.total_seconds())
+        hours = round(seconds // 3600)
+        minutes = round((seconds-hours*3600) // 60)
+        sec = seconds - hours*3600 - minutes*60
+
+        hours = f'0{hours}'if len(str(hours))==1 else str(hours)
+        minutes = f'0{minutes}'if len(str(minutes))==1 else str(minutes)
+        sec = f'0{sec}'if len(str(sec))==1 else str(sec)
+        date_str = f"{hours}:{minutes} {sec} с"
+
+        startPrice = lot['startPrice']
+        buyoutPrice = lot['buyoutPrice']
+
+        startPrice_H, startPrice_W = bigFont.getsize(str(startPrice))
+        buyoutPrice_H, buyoutPrice_W = bigFont.getsize(str(buyoutPrice))
+
+        quality = 0
         if it_artefact:
-            if 'qlt' not in a['additional'] or a['additional']['qlt'] == 0:
+            if 'qlt' not in lot['additional'] or lot['additional']['qlt'] == 0:
                 quality = 0
             else:
-                quality = a['additional']['qlt']
-            row.append(quality)
-        mass.append(row)
-    if lang == "en":
-        field_names = ["Start price", "Out price", "Time"]
-        if it_artefact:
-            field_names.append("Qlt.")
-    elif lang == "uk":
-        field_names = ["Початкова ціна", "Викуп", "Час"]
-        if it_artefact:
-            field_names.append("Рідк.")
-    else:
-        field_names = ["Ставка", "Выкуп", "Время"]
-        if it_artefact:
-            field_names.append("Ред.")
-    fig, axs = plt.subplots()
-    fig.patch.set_visible(False)
-    axs.axis('tight')
-    axs.axis('off')
-    fig.tight_layout()
-    axs.table(cellText=mass, colLabels=field_names, loc='center')
-    ax = plt.gca()
-    im = plt.imread(image_path)
-    ax.figure.figimage(im,
-                       ax.bbox.xmax // 2 - im.shape[0] // 2,
-                       ax.bbox.ymax // 2 - im.shape[1] // 2,
-                       alpha=.50, zorder=1)
-    plt.savefig("table.png")
-    plt.close()
-    async with aiofiles.open("table.png", "rb") as f:
+                quality = lot['additional']['qlt']
+            if lot['additional'].get('ptn'):
+                item_name = f'{item_name} | +{lot["additional"].get("ptn")}'
+        quality_color = {
+            0:(140, 140, 140),
+            1:(0, 200, 50),
+            2:(0, 100, 200),
+            3:(156, 0, 156),
+            4:(200, 0, 0),
+            5:(200, 200, 0),
+        }
+
+        idraw.text((165, 111 + 99*num), item_name, font=font, fill=quality_color.get(quality))
+        idraw.text((165, 150 + 99*num), date_str, font=font, fill=(200, 200, 0))
+
+        idraw.text((460-startPrice_H // 2, 122 + 99*num), str(startPrice), font=bigFont, fill=(140, 140, 140))
+        idraw.text((620-buyoutPrice_H // 2, 122 + 99*num), str(buyoutPrice), font=bigFont, fill=(140, 140, 140))
+        if num >= 4:
+            break
+    # mass = []
+    # it_artefact = dbitem.is_it_artifact(my_item_id=item_id, server_name=server)
+    # for a in lots['lots']:
+    #     date = datetime.strptime(a['endTime'] + "+0000",
+    #                              "%Y-%m-%dT%H:%M:%SZ%z") - datetime.now(timezone.utc).replace(microsecond=0)
+    #     hours = round(date.total_seconds() / 3600)
+    #     minutes = round(date.total_seconds() % 60)
+    #     date_str = "%d:%d" % (hours, minutes)
+    #     row = [a['startPrice'], a['buyoutPrice'], date_str]
+    #     if it_artefact:
+    #         if 'qlt' not in a['additional'] or a['additional']['qlt'] == 0:
+    #             quality = 0
+    #         else:
+    #             quality = a['additional']['qlt']
+    #         row.append(quality)
+    #     mass.append(row)
+    # if lang == "en":
+    #     field_names = ["Start price", "Out price", "Time"]
+    #     if it_artefact:
+    #         field_names.append("Qlt.")
+    # elif lang == "uk":
+    #     field_names = ["Початкова ціна", "Викуп", "Час"]
+    #     if it_artefact:
+    #         field_names.append("Рідк.")
+    # else:
+    #     field_names = ["Ставка", "Выкуп", "Время"]
+    #     if it_artefact:
+    #         field_names.append("Ред.")
+    # fig, axs = plt.subplots()
+    # fig.patch.set_visible(False)
+    # axs.axis('tight')
+    # axs.axis('off')
+    # fig.tight_layout()
+    # axs.table(cellText=mass, colLabels=field_names, loc='center')
+    # ax = plt.gca()
+    # im = plt.imread(image_path)
+    # ax.figure.figimage(im,
+    #                    ax.bbox.xmax // 2 - im.shape[0] // 2,
+    #                    ax.bbox.ymax // 2 - im.shape[1] // 2,
+    #                    alpha=.50, zorder=1)
+    # plt.savefig("table.png")
+    # plt.close()
+    path = f'images/pdases/{item_id}.png'
+    img.save(path); img.close()
+    async with aiofiles.open(path, "rb") as f:
         img = await f.read()
-    os.remove("table.png")
+    os.remove(path)
     return img
 
 
