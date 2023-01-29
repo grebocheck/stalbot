@@ -23,15 +23,11 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str, ite
     """
     LEN_TABLE = 20
     limit = LEN_TABLE + 1
-    lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit, offset=page*LEN_TABLE)
+    lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit)
     if len(lots['lots']) == limit:
         next_btn = True
     else:
         next_btn = False
-    if page == 0:
-        back_btn = False
-    else:
-        back_btn = True
     if lots.get('total') == 0:
         return None
     img = Image.open('images/pdaRu.png').convert("RGB")
