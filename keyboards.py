@@ -68,9 +68,9 @@ async def get_emission_keyboard(user):
 
 async def get_emission_close_keyboard(user):
     kb = InlineKeyboardMarkup(resize_keyboard=True)
-    kbRgnwrd = 'emi:'
+    kbRgnwrd = 'emic'
     kb.add(
-        InlineKeyboardButton(await lng.trans('Отключить❌', user),
+        InlineKeyboardButton(await lng.trans('Отключить уведомления❌', user),
                              callback_data=f'{kbRgnwrd}0')
     )
     return kb

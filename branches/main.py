@@ -7,11 +7,12 @@ from additions.apio import scb
 
 @dp.message_handler(state='*', commands='cancel')
 @dp.callback_query_handler(ft.Text(startswith='cancel'), state='*')
-async def cancel_handler(message: types.Message, state: FSMContext):
+async def cancel_handler(message: types.Message | types.CallbackQuery, state: FSMContext):
     """
     Функція скасування будь-якої дії
     """
     user = message.from_user
+    await bot.delete_message(user.id, message_id=message.message.message_id)
     current_state = await state.get_state()
     if current_state is None:
         await bot.send_message(user.id, await lng.trans('Действие отменено⛔️', user),
@@ -111,6 +112,22 @@ async def cnange_emission_callback(callback: types.CallbackQuery):
     transText = await lng.full_trans('welcome', user)
     await bot.delete_message(user.id, message_id=callback.message.message_id)
     await bot.send_message(user.id, transText, reply_markup=keyboard)
+
+
+@dp.callback_query_handler(ft.Text(startswith='emic'))
+async def cnange_emission_callback(callback: types.CallbackQuery):
+    user = callback.from_user
+    await db.userSettings.update_one(
+        {
+            'telegram_id': callback.from_user.id
+        },
+        {
+            '$set': {
+                'emission': False
+            }
+        }, True)
+    await bot.delete_message(user.id, message_id=callback.message.message_id)
+    await bot.send_message(user.id, await lng.trans("Уведомления отключены ☄️", user))
 
 # @dp.message_handler(content_types=ContentType.TEXT, state=Form_Reg.get_lang)
 # async def process_reg_two(message: types.Message, state: FSMContext):

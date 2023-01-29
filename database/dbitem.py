@@ -1,4 +1,6 @@
 import json
+import difflib
+from additions.log import log_deb
 
 with open('database/dbitem/global/listing.json', "rb") as json_file:
     item_db_global = json.load(json_file)
@@ -43,8 +45,8 @@ def search_all_ru_item_id() -> list:
     return mass
 
 
-item_id_db_global = search_all_gloabal_item_id()
-item_id_db_ru = search_all_ru_item_id()
+# item_id_db_global = search_all_gloabal_item_id()
+# item_id_db_ru = search_all_ru_item_id()
 
 
 def search_item_name_by_id(my_item_id: str, server_name: str, lang: str):
@@ -85,18 +87,24 @@ def search_item_id_by_name(my_item_name: str, server_name: str):
     my_item_name = my_item_name.lower()
     gl_server = global_server(server_name)
     if gl_server:
-        for a in item_db_global:
-            item_name_ru = a["name"]["lines"]["ru"]
-            item_name_en = a["name"]["lines"]["en"]
-            if item_name_en.lower().find(my_item_name) != -1 or item_name_ru.lower().find(my_item_name) != -1:
-                return a["data"].split("/")[-1][:-5]
+        item_db = item_db_global
     else:
-        for a in item_db_ru:
-            item_name_ru = a["name"]["lines"]["ru"].lower()
-            item_name_en = a["name"]["lines"]["en"]
-            if item_name_en.lower().find(my_item_name) != -1 or item_name_ru.lower().find(my_item_name) != -1:
-                return a["data"].split("/")[-1][:-5]
-    return None
+        item_db = item_db_ru
+    names_list = []
+    names_dict = {}
+    for a in item_db:
+        item_name_ru = a["name"]["lines"]["ru"]
+        item_name_en = a["name"]["lines"]["en"]
+        if my_item_name.lower() in item_name_en.lower() or my_item_name.lower() in item_name_ru.lower():
+            names_list.append(item_name_en)
+            names_list.append(item_name_ru)
+            names_dict[item_name_en] = a["data"].split("/")[-1][:-5]
+            names_dict[item_name_ru] = a["data"].split("/")[-1][:-5]
+    item_name_list = difflib.get_close_matches(my_item_name, names_list, n=1, cutoff=0.3)
+    if not item_name_list:
+        return None
+    item_name = item_name_list[0]
+    return names_dict[item_name]
 
 
 def get_item_image(my_item_id: str, server_name: str):

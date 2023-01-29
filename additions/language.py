@@ -6,7 +6,6 @@ from config import available_languages
 
 class Language:
 
-
     def __init__(self):
 
         # open short_text.json
@@ -25,7 +24,6 @@ class Language:
         print(f'Available languages: {available_languages}')
 
         # print(f'All avaible text: {self.all_text}')
-
 
     async def trans(self, text: str, user, args=None):  # trans = translate
         if user in available_languages:  # if user language given
@@ -51,28 +49,25 @@ class Language:
                             found_text = found_text.format(args)
                     print(f'Found text: {found_text}')
                     return found_text  # return translation
-        
-                        
-    
 
     async def full_trans(self, text: str, user, args=None):
         user_lang = await self.get_user_lang(user)
 
         with open(f'languages/texts/{text}.txt', encoding='utf-8') as ft:
             text_data = ft.read()
-        
+
         print(f'text_data: {text_data}')
 
         # find index of "```{user_lang}" in text_data
         index = text_data.find(f'```{user_lang}')
         if index == -1:
             raise Exception(f'Language "{user_lang}" not found in "{text}"')
-        
+
         # find index of "```" after "```{user_lang}"
         index_end = text_data.find('```', index + 1)
         if index_end == -1:
             raise Exception(f'Language "{user_lang}" ending "```" was not found in "{text}"')
-        
+
         result_text = text_data[index + 4 + len(user_lang):index_end]  # text from index to index_end
         print(f'Found text: {result_text}')
 
@@ -88,10 +83,13 @@ class Language:
 
         return result_text  # return translation
 
-
     async def get_user_lang(self, user):
         # get user language preferebly from database, otherwise from telegram user settings
-        tg_lang = user.language_code[:2]  # get user telegram default language
+        default_lang = 'ru'
+        try:
+            tg_lang = user.language_code[:2]  # get user telegram default language
+        except (TypeError, AttributeError):
+            tg_lang = default_lang
         bd_lang = await db.userSettings.find_one({'telegram_id': user.id})  # get language user language from database
 
         if bd_lang and bd_lang.get('language'):  # if user in database
@@ -99,8 +97,7 @@ class Language:
         elif tg_lang in available_languages:  # if user language is available
             return tg_lang
         else:
-            return 'ru'  # default language
-
+            return default_lang  # default language
 
     async def get_text(self, link: str):
         lang = await self.get_lang(self.user)
