@@ -11,7 +11,7 @@ from bot import *
 from additions.apio import scb
 
 
-async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str):
+async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str, page: int):
     """
     Функція обробник, формує відповіть з апі в повідомлення для бота
     :param image_path: Назва предмету
@@ -20,9 +20,19 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str):
     :param lang: Мова інтерфейсу
     :return: повідомлення
     """
-    lots = await scb.get_auction_lots(item_id=item_id, region=server)
+    LEN_TABLE = 20
+    limit = LEN_TABLE + 1
+    lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit, offset=page*LEN_TABLE)
+    if len(lots['lots']) == limit:
+        next_btn = True
+    else:
+        next_btn = False
+    if page == 0:
+        back_btn = False
+    else:
+        back_btn = True
     if lots.get('total') == 0:
-        return None
+        return [None, False, False]
     mass = []
     it_artefact = dbitem.is_it_artifact(my_item_id=item_id, server_name=server)
     for a in lots['lots']:
@@ -30,7 +40,7 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str):
                                  "%Y-%m-%dT%H:%M:%SZ%z") - datetime.now(timezone.utc).replace(microsecond=0)
         hours = round(date.total_seconds() / 3600)
         minutes = round(date.total_seconds() % 60)
-        date_str = "%d:%d" % (hours, minutes)
+        date_str = "%02dh:%02dm" % (hours, minutes)
         row = [a['startPrice'], a['buyoutPrice'], date_str]
         if it_artefact:
             if 'qlt' not in a['additional'] or a['additional']['qlt'] == 0:
@@ -68,7 +78,7 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str):
     async with aiofiles.open("table.png", "rb") as f:
         img = await f.read()
     os.remove("table.png")
-    return img
+    return [img, back_btn, next_btn]
 
 
 async def get_history(item_id: str, server: str, lang: str, item_name: str, image_path: str):
