@@ -81,10 +81,21 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
     :param image_path: Шлях до зображення предмету
     :return: Графік в вигляді зображення
     """
-    histo = await scb.get_auction_history(item_id=item_id, region=server)
+    histo = await scb.get_auction_history(item_id=item_id, region=server, limit=100, offset=0)
+    histo_prices = histo['prices']
+    k = 1
+    while True:
+        last_time = datetime.strptime(histo['prices'][-1]['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")
+        len_histo = len(histo['prices'])
+        if last_time < datetime.now(timezone.utc) - timedelta(days=30) or len_histo != 100:
+            break
+        else:
+            histo = await scb.get_auction_history(item_id=item_id, region=server, limit=100, offset=k * 99)
+            k += 1
+            histo_prices += histo['prices'][1:]
     y = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
     x = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
-    for a in histo['prices']:
+    for a in histo_prices:
         if 'qlt' not in a['additional'] or a['additional']['qlt'] == 0:
             y['0'].append(a['price'])
             x['0'].append(datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z"))

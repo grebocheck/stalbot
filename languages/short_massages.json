@@ -120,6 +120,11 @@
         "uk": "Сповіщення вимкнені ☄️"
       },
       {
+        "ru": "Рисую график \uD83C\uDFA8",
+        "en": "Drawing a graph \uD83C\uDFA8",
+        "uk": "Малюю графік \uD83C\uDFA8"
+      },
+      {
         "ru": "На сервере {} начался выброс\uD83C\uDF29",
         "en": "The server {} has started to eject\uD83C\uDF29",
         "uk": "На сервері {} почався викид\uD83C\uDF29"

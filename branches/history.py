@@ -19,11 +19,12 @@ async def process_history_two(message: types.Message, state: FSMContext):
     it_item = dbitem.search_item_id_by_name(message.text, user_lang)
     if it_item:
         await state.finish()
+        soon_mess = await message.answer(await lng.trans("Рисую график 🎨", user))
         image_path = dbitem.get_item_image(my_item_id=it_item, server_name=user_server)
         item_name = dbitem.search_item_name_by_id(it_item, server_name=user_server, lang=user_lang)
         plot = await worse.get_history(item_id=it_item, server=user_server, lang=user_lang,
                                        item_name=item_name, image_path=image_path)
-
+        await soon_mess.delete()
         await message.reply_photo(plot, caption=await lng.trans("История цен на {} на сервере {}📊", user,
                                                                 [item_name, user_server]),
                                   parse_mode="Markdown", reply_markup=await get_main_keyboard(user))
