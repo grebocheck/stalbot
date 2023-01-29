@@ -17,8 +17,8 @@ async def process_history_two(message: types.Message, state: FSMContext):
     user_lang = await lng.get_user_lang(user)
     user_server = await get_user_server(user)
     it_item = dbitem.search_item_id_by_name(message.text, user_lang)
+    await state.finish()
     if it_item:
-        await state.finish()
         soon_mess = await message.answer(await lng.trans("Рисую график 🎨", user))
         image_path = dbitem.get_item_image(my_item_id=it_item, server_name=user_server)
         item_name = dbitem.search_item_name_by_id(it_item, server_name=user_server, lang=user_lang)
