@@ -75,9 +75,7 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str, pag
                        alpha=.50, zorder=1)
     plt.savefig("table.png")
     plt.close()
-    async with aiofiles.open("table.png", "rb") as f:
-        img = await f.read()
-    os.remove("table.png")
+    img = open("table.png", "rb")
     return [img, back_btn, next_btn]
 
 
