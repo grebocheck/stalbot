@@ -34,9 +34,14 @@ class StalcraftAPI:
         r = await self.__request_get(endpoint, self.authHeader)
         return r
 
-    async def get_auction_lots(self, item_id, region, additional="true", limit=20, offset=0):
+    async def get_auction_lots(self, item_id, region, additional="true",
+                               limit=20, offset=0, sort="buyout_price", order=True):
+        if order:
+            sorder = "asc"
+        else:
+            sorder = "desc"
         endpoint = f'{region}/auction/{item_id}/lots'
-        params = f'?limit={limit}&sort=buyout_price&offset={offset}&order=asc&additional={additional}'
+        params = f'?limit={limit}&sort={sort}&offset={offset}&order={sorder}&additional={additional}'
         endpoint += params
         r = await self.__request_get(endpoint, self.authHeader)
         return r
