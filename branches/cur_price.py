@@ -61,10 +61,8 @@ async def cnange_emission_callback(callback: types.CallbackQuery):
         page += 1
     elif choice == 'back':
         page -= 1
-    elif choice == "asc":
-        order = False
-    elif choice == "desc":
-        order = True
+    elif choice == select:
+        order = not order
     else:
         select = choice
     image_path = dbitem.get_item_image(my_item_id=it_item, server_name=user_server)

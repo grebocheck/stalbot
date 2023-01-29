@@ -95,22 +95,19 @@ async def get_cur_price_keyboard(user, next_btn: bool, back_btn: bool, order: bo
                                            callback_data=f'{kbRgnwrd}next:{page}:{item}:{select}:{order_call}')
         btns.append(button_next)
 
-    if order:
-        btns.append(InlineKeyboardButton("🔼",
-                                         callback_data=f'{kbRgnwrd}asc:{page}:{item}:{select}:{order_call}'))
-    else:
-        btns.append(InlineKeyboardButton("🔽",
-                                         callback_data=f'{kbRgnwrd}desc:{page}:{item}:{select}:{order_call}'))
-
     buyout_name = await lng.trans("Выкуп", user)
     time_name = await lng.trans("Время", user)
     bid_name = await lng.trans("Ставка", user)
+    if order:
+        pris = "🔼"
+    else:
+        pris = "🔽"
     if select == "buyout_price":
-        buyout_name += "💠"
+        buyout_name += pris
     elif select == "time_left":
-        time_name += "💠"
+        time_name += pris
     elif select == "current_price":
-        bid_name += "💠"
+        bid_name += pris
 
     btns_foot.append(InlineKeyboardButton(buyout_name,
                                           callback_data=f'{kbRgnwrd}buyout_price:{page}:{item}:{select}:{order_call}'))
