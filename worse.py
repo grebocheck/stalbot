@@ -21,7 +21,17 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str, ite
     :param lang: Мова інтерфейсу
     :return: повідомлення
     """
-    lots = await scb.get_auction_lots(item_id=item_id, region=server)
+    LEN_TABLE = 20
+    limit = LEN_TABLE + 1
+    lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit, offset=page*LEN_TABLE)
+    if len(lots['lots']) == limit:
+        next_btn = True
+    else:
+        next_btn = False
+    if page == 0:
+        back_btn = False
+    else:
+        back_btn = True
     if lots.get('total') == 0:
         return None
     img = Image.open('images/pdaRu.png').convert("RGB")
@@ -77,48 +87,6 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str, ite
         idraw.text((620-buyoutPrice_H // 2, 122 + 99*num), str(buyoutPrice), font=bigFont, fill=(140, 140, 140))
         if num >= 4:
             break
-    # mass = []
-    # it_artefact = dbitem.is_it_artifact(my_item_id=item_id, server_name=server)
-    # for a in lots['lots']:
-    #     date = datetime.strptime(a['endTime'] + "+0000",
-    #                              "%Y-%m-%dT%H:%M:%SZ%z") - datetime.now(timezone.utc).replace(microsecond=0)
-    #     hours = round(date.total_seconds() / 3600)
-    #     minutes = round(date.total_seconds() % 60)
-    #     date_str = "%d:%d" % (hours, minutes)
-    #     row = [a['startPrice'], a['buyoutPrice'], date_str]
-    #     if it_artefact:
-    #         if 'qlt' not in a['additional'] or a['additional']['qlt'] == 0:
-    #             quality = 0
-    #         else:
-    #             quality = a['additional']['qlt']
-    #         row.append(quality)
-    #     mass.append(row)
-    # if lang == "en":
-    #     field_names = ["Start price", "Out price", "Time"]
-    #     if it_artefact:
-    #         field_names.append("Qlt.")
-    # elif lang == "uk":
-    #     field_names = ["Початкова ціна", "Викуп", "Час"]
-    #     if it_artefact:
-    #         field_names.append("Рідк.")
-    # else:
-    #     field_names = ["Ставка", "Выкуп", "Время"]
-    #     if it_artefact:
-    #         field_names.append("Ред.")
-    # fig, axs = plt.subplots()
-    # fig.patch.set_visible(False)
-    # axs.axis('tight')
-    # axs.axis('off')
-    # fig.tight_layout()
-    # axs.table(cellText=mass, colLabels=field_names, loc='center')
-    # ax = plt.gca()
-    # im = plt.imread(image_path)
-    # ax.figure.figimage(im,
-    #                    ax.bbox.xmax // 2 - im.shape[0] // 2,
-    #                    ax.bbox.ymax // 2 - im.shape[1] // 2,
-    #                    alpha=.50, zorder=1)
-    # plt.savefig("table.png")
-    # plt.close()
     path = f'images/pdases/{item_id}.png'
     img.save(path); img.close()
     async with aiofiles.open(path, "rb") as f:

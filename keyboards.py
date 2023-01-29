@@ -76,6 +76,23 @@ async def get_emission_close_keyboard(user):
     return kb
 
 
+async def get_cur_price_keyboard(next_btn: bool, back_btn: bool, page: int, item: str):
+    kb = InlineKeyboardMarkup(resize_keyboard=True)
+    kbRgnwrd = 'cur:'
+    btns = []
+    if back_btn:
+        button_back = InlineKeyboardButton("⬅️", callback_data=f'{kbRgnwrd}0:{page}:{item}')
+        btns.append(button_back)
+    if next_btn:
+        button_next = InlineKeyboardButton("➡️", callback_data=f'{kbRgnwrd}1:{page}:{item}')
+        btns.append(button_next)
+    if btns:
+        kb.add(*btns)
+        return kb
+    else:
+        return None
+
+
 remove_keyboard = ReplyKeyboardRemove()
 
 # Клавіатура меню
