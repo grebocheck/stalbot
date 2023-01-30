@@ -175,8 +175,6 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
                 elif elem[1] < b[0]:
                     mass_pl[greph_time] = [elem[0], b[0]]
 
-        log_deb(str(mass_pl))
-
         if not mass_pl:
             continue
 
