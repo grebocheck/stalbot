@@ -43,7 +43,7 @@ async def process_price_two(message, state: FSMContext):
             keyboard = await get_cur_price_keyboard(next_btn=next_btn, back_btn=back_btn, page=0,
                                                     item=it_item, select="buyout_price", order=True,
                                                     user=user)
-            await bot.send_photo(user.id, plot, parse_mode="Markdown", reply_markup=keyboard)
+            await bot.send_photo(user.id, plot, reply_markup=keyboard)
             plot.close()
             os.remove("table.png")
             return
@@ -85,9 +85,7 @@ async def cnange_emission_callback(callback: types.CallbackQuery):
         keyboard = await get_cur_price_keyboard(next_btn=next_btn, back_btn=back_btn, page=page,
                                                 item=it_item, select=select, order=order,
                                                 user=user)
-        text = await lng.trans(
-            "Цены на аукционе сервера {} сейчас на предмет {} ⚖", user, [user_server, item_name])
-        await callback.message.edit_media(media=types.InputMediaPhoto(plot, caption=text),
+        await callback.message.edit_media(media=types.InputMediaPhoto(plot),
                                           reply_markup=keyboard)
         plot.close()
         os.remove("table.png")
