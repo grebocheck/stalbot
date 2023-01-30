@@ -1,7 +1,6 @@
 from datetime import datetime, timezone, timedelta
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
-from scipy.stats import sem
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 import aiofiles
