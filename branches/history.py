@@ -1,3 +1,5 @@
+import os
+
 from bot import *
 from keyboards import *
 import filters as flt
@@ -13,7 +15,7 @@ async def process_history_one(message: types.Message):
 
 @dp.callback_query_handler(ft.Text(startswith='his:'), state='*')
 @dp.message_handler(content_types=ContentType.TEXT, state=Form_Hist.get_item)
-async def process_history_two(message: types.Message, state: FSMContext):
+async def process_history_two(message: types.Message | types.CallbackQuery, state: FSMContext):
     await state.finish()
     user = message.from_user
     user_lang = await lng.get_user_lang(user)
@@ -22,7 +24,8 @@ async def process_history_two(message: types.Message, state: FSMContext):
         it_items = dbitem.search_item_id_by_name(message.text, user_server, user_lang)
         if len(it_items.keys()) > 1:
             kb = await get_history_price_keyboard(it_items)
-            return await message.reply(await lng.trans('Нашёл несколько вариантов, выберете ниже', user), reply_markup=kb)
+            return await message.reply(await lng.trans('Нашёл несколько вариантов, выберете ниже', user),
+                                       reply_markup=kb)
         elif len(it_items.keys()) == 0:
             it_item = None
         else:
@@ -38,8 +41,15 @@ async def process_history_two(message: types.Message, state: FSMContext):
         plot = await worse.get_history(item_id=it_item, server=user_server, lang=user_lang,
                                        item_name=item_name, image_path=image_path)
         await soon_mess.delete()
-        await bot.send_photo(user.id, plot, caption=await lng.trans("История цен на {} на сервере {}📊", user,
-                                                                [item_name, user_server]),
-                                  parse_mode="Markdown", reply_markup=await get_main_keyboard(user))
+        media = types.MediaGroup()
+        for a in plot:
+            media.attach_photo(types.InputMediaPhoto(open(a, "rb")))
+        await bot.send_media_group(user.id, media=media,
+                                   # caption=await lng.trans("История цен на {} на сервере {}📊", user,
+                                   #                         [item_name, user_server]),
+                                   # parse_mode="Markdown", reply_markup=await get_main_keyboard(user)
+                                   )
+        for a in plot:
+            os.remove(a)
     else:
-       await bot.send_message(user.id, await lng.trans("Простите, но я не могу найти этот предмет😰", user))
+        await bot.send_message(user.id, await lng.trans("Простите, но я не могу найти этот предмет😰", user))

@@ -15,7 +15,7 @@ def global_server(serv: str) -> bool:
     :param serv: Назва серверу
     :return: Так чи Ні
     """
-    if serv.lower() == "ru":
+    if serv == "RU":
         return False
     else:
         return True
@@ -59,26 +59,22 @@ def search_item_name_by_id(my_item_id: str, server_name: str, lang: str):
     """
     gl_server = global_server(server_name)
     if gl_server:
-        for a in item_db_global:
-            item_id = a["data"].split("/")[-1][:-5]
-            if item_id == my_item_id:
-                if lang == 'en':
-                    return a["name"]["lines"]["en"]
-                else:
-                    return a["name"]["lines"]["ru"]
+        item_db = item_db_global
     else:
-        for a in item_db_ru:
-            item_id = a["data"].split("/")[-1][:-5]
-            if item_id == my_item_id:
-                if lang == 'en':
-                    return a["name"]["lines"]["en"]
-                else:
-                    return a["name"]["lines"]["ru"]
+        item_db = item_db_ru
+    for a in item_db:
+        item_id = a["data"].split("/")[-1][:-5]
+        if item_id == my_item_id:
+            if lang == 'en':
+                return a["name"]["lines"]["en"]
+            else:
+                return a["name"]["lines"]["ru"]
 
 
 def search_item_id_by_name(my_item_name: str, server_name: str, user_lang):
     """
     Пошук Ідентифікатора предмета (XXXX) по його назві в тому числі не повній
+    :param user_lang:
     :param server_name: Назва серверу
     :param my_item_name: Назва предмету
     :return: Ідентифікатор предмету (XXXX) або None в випадку якщо предмету немає
@@ -111,15 +107,15 @@ def get_item_image(my_item_id: str, server_name: str):
     """
     gl_server = global_server(server_name)
     if gl_server:
-        for a in item_db_global:
-            item_id = a["data"].split("/")[-1][:-5]
-            if item_id == my_item_id:
-                return "database/dbitem/global" + a["icon"]
+        item_db = item_db_global
+        pris = "global"
     else:
-        for a in item_db_ru:
-            item_id = a["data"].split("/")[-1][:-5]
-            if item_id == my_item_id:
-                return "database/dbitem/ru" + a["icon"]
+        item_db = item_db_ru
+        pris = "ru"
+    for a in item_db:
+        item_id = a["data"].split("/")[-1][:-5]
+        if item_id == my_item_id:
+            return "database/dbitem/" + pris + a["icon"]
 
 
 def is_it_artifact(my_item_id: str, server_name: str):

@@ -1,6 +1,9 @@
 from datetime import datetime, timezone, timedelta
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
+from mplfinance.original_flavor import candlestick2_ohlc
+import pandas as pd
+from scipy.stats import sem
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 import aiofiles
@@ -99,7 +102,7 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
 
         idraw.text((460 - startPrice_H // 2, 125 + 99 * num), str(startPrice), font=bigFont, fill=(140, 140, 140))
         idraw.text((620 - buyoutPrice_H // 2, 125 + 99 * num), str(buyoutPrice), font=bigFont, fill=(140, 140, 140))
-        
+
         if num >= 4:
             break
     idraw.text((80, 592), server, font=smallFont, fill=(140, 140, 140))
@@ -110,7 +113,7 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
     return [file, back_btn, next_btn]
 
 
-async def get_history(item_id: str, server: str, lang: str, item_name: str, image_path: str):
+async def get_history_old(item_id: str, server: str, lang: str, item_name: str, image_path: str):
     """
     Функція обробник, на основі запиту на історію формує графік
     :param item_id: Ідентифікатор предмету (XXXX)
@@ -165,7 +168,7 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
     plt.plot(x['5'], y['5'], color="yellow", marker='o', markerfacecolor='black', markersize=3, label='5')
     plt.plot(x['6'], y['6'], color="magenta", marker='o', markerfacecolor='black', markersize=3, label='6')
     plt.legend()
-    plt.semilogy()
+    # plt.semilogy()
     plt.xticks(rotation=20)
     if lang == "en":
         plt.xlabel('Time')
@@ -192,3 +195,118 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
         img = await f.read()
     os.remove("plot.png")
     return img
+
+
+async def get_history(item_id: str, server: str, lang: str, item_name: str, image_path: str):
+    """
+    Функція обробник, на основі запиту на історію формує графік
+    :param item_id: Ідентифікатор предмету (XXXX)
+    :param server: Назва серверу
+    :param lang: Мова інтерфейсу
+    :param item_name: Назва предмету
+    :param image_path: Шлях до зображення предмету
+    :return: Графік в вигляді зображення
+    """
+    histo = await scb.get_auction_history(item_id=item_id, region=server, limit=100, offset=0)
+    histo_prices = histo['prices']
+    k = 1
+    while True:
+        last_time = datetime.strptime(histo['prices'][-1]['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")
+        len_histo = len(histo['prices'])
+        if last_time < datetime.now(timezone.utc) - timedelta(days=30) or len_histo != 100:
+            break
+        else:
+            histo = await scb.get_auction_history(item_id=item_id, region=server, limit=100, offset=k * 99)
+            k += 1
+            histo_prices += histo['prices'][1:]
+    cords = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
+    for a in histo_prices:
+        if 'qlt' not in a['additional'] or a['additional']['qlt'] == 0:
+            cords['0'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+        elif a['additional']['qlt'] == 1:
+            cords['1'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+        elif a['additional']['qlt'] == 2:
+            cords['2'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+        elif a['additional']['qlt'] == 3:
+            cords['3'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+        elif a['additional']['qlt'] == 4:
+            cords['4'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+        elif a['additional']['qlt'] == 5:
+            cords['5'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+    mass_images = []
+    colors = {"0": "gray", "1": "green", "2": "blue", "3": "purple", "4": "red", "5": "yellow"}
+    qlt = {
+        'uk': {"0": "Звичайний", "1": "Незвичайний", "2": "Особливий", "3": "Рідкісний",
+               "4": "Виключний", "5": "Легендарний"},
+        'en': {"0": "Normal", "1": "Unusual", "2": "Special", "3": "Rare",
+               "4": "Exceptional", "5": "Legendary"},
+        'ru': {"0": "Обычный", "1": "Необычный", "2": "Особый", "3": "Редкий",
+               "4": "Исключительный", "5": "Легендарный"},
+    }
+    for a in cords:
+        # plt.semilogy()
+        mass_pl = {}
+        for b in cords[a]:
+            greph_time = datetime(year=b[1].year,
+                                  month=b[1].month,
+                                  day=b[1].day)
+            if greph_time not in mass_pl:
+                mass_pl[greph_time] = [b[0], b[0]]
+            else:
+                elem = mass_pl[greph_time]
+                if elem[0] > b[0]:
+                    mass_pl[greph_time] = [b[0], elem[1]]
+                elif elem[1] < b[0]:
+                    mass_pl[greph_time] = [elem[0], b[0]]
+
+        log_deb(str(mass_pl))
+
+        if not mass_pl:
+            continue
+
+        mass_min_y = []
+        mass_max_y = []
+        mass_x = []
+        for c in mass_pl:
+            mass_x.append(c)
+            mass_max_y.append(mass_pl[c][1])
+            mass_min_y.append(mass_pl[c][0])
+        plt.figure(figsize=(10, 10))
+        plt.plot(mass_x, mass_min_y, color='black', linewidth=1, marker='o', markerfacecolor='black', markersize=2)
+        plt.plot(mass_x, mass_max_y, color='black', linewidth=1, marker='o', markerfacecolor='black', markersize=2)
+        plt.fill_between(mass_x, mass_min_y, mass_max_y,
+                         facecolor=colors[a])
+        plt.xticks(rotation=20)
+        it_artefact = dbitem.is_it_artifact(my_item_id=item_id, server_name=server)
+        if lang == "en":
+            plt.xlabel('Time')
+            plt.ylabel('Price, rub')
+            if it_artefact:
+                plt.title(f'Price of {item_name} on server {server} ({qlt[lang][a]})')
+            else:
+                plt.title(f'Price of {item_name} on server {server}')
+        elif lang == "uk":
+            plt.xlabel('Час')
+            plt.ylabel('Ціна, руб')
+            if it_artefact:
+                plt.title(f'Ціна на {item_name} на сервері {server} ({qlt[lang][a]})')
+            else:
+                plt.title(f'Ціна на {item_name} на сервері {server}')
+        else:
+            plt.xlabel('Время')
+            plt.ylabel('Цена, руб')
+            if it_artefact:
+                plt.title(f'Цены на {item_name} на сервере {server} ({qlt[lang][a]})')
+            else:
+                plt.title(f'Цены на {item_name} на сервере {server}')
+        ax = plt.gca()
+        im = plt.imread(image_path)
+        ax.figure.figimage(im,
+                           ax.bbox.xmax // 2 - im.shape[0] // 2,
+                           ax.bbox.ymax // 2 - im.shape[1] // 2,
+                           alpha=.50, zorder=1)
+        f_name = f"plots/plot{a}.png"
+        plt.savefig(f_name)
+        plt.close()
+        mass_images.append(f_name)
+    return mass_images

@@ -33,7 +33,7 @@ async def process_price_two(message, state: FSMContext):
         await bot.delete_message(user.id, message.message.message_id)
     
     if it_item:
-        image_path = dbitem.get_item_image(my_item_id=it_item, server_name=user_lang)
+        image_path = dbitem.get_item_image(my_item_id=it_item, server_name=user_server)
         item_name = dbitem.search_item_name_by_id(it_item, server_name=user_server, lang=user_lang)
         plot, back_btn, next_btn = await worse.get_auc_lot(item_id=it_item, server=user_server,
                                                            lang=user_lang, image_path=image_path,

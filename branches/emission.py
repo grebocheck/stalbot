@@ -20,9 +20,12 @@ async def emission_logger(region):
                 user_server = await get_user_server(user)
                 if user_server != region:
                     continue
-                await bot.send_message(user.id,
-                                       await lng.trans("На сервере {} начался выброс🌩", user, user_server),
-                                       reply_markup=await get_emission_close_keyboard(user))
+                try:
+                    await bot.send_message(user.id,
+                                           await lng.trans("На сервере {} начался выброс🌩", user, user_server),
+                                           reply_markup=await get_emission_close_keyboard(user))
+                except Exception as ex:
+                    log_err(str(ex))
             await asyncio.sleep(2.5 * 60 * 60)
     except Exception as ex:
         log_err(str(ex))
