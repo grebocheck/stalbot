@@ -1,8 +1,6 @@
 from datetime import datetime, timezone, timedelta
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
-from mplfinance.original_flavor import candlestick2_ohlc
-import pandas as pd
 from scipy.stats import sem
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw, ImageOps
