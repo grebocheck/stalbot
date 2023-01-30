@@ -34,6 +34,10 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
         next_btn = True
     else:
         next_btn = False
+    if page == 0:
+        back_btn = False
+    else:
+        back_btn = True
     if lots.get('total') == 0:
         return [None, False, False]
     if lang == 'ru':
@@ -49,6 +53,7 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
 
     font = ImageFont.truetype("images/Roboto-Medium.ttf", size=25)
     bigFont = ImageFont.truetype("images/Roboto-Medium.ttf", size=30)
+    smallFont = ImageFont.truetype("images/Roboto-Medium.ttf", size=14)
     it_artefact = dbitem.is_it_artifact(my_item_id=item_id, server_name=server)
     idraw = ImageDraw.Draw(img)
     for num, lot in enumerate(lots['lots']):
@@ -92,10 +97,12 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
         idraw.text((165, 111 + 99 * num), item_name_tab, font=font, fill=quality_color.get(quality))
         idraw.text((165, 150 + 99 * num), date_str, font=font, fill=(200, 200, 0))
 
-        idraw.text((460 - startPrice_H // 2, 122 + 99 * num), str(startPrice), font=bigFont, fill=(140, 140, 140))
-        idraw.text((620 - buyoutPrice_H // 2, 122 + 99 * num), str(buyoutPrice), font=bigFont, fill=(140, 140, 140))
+        idraw.text((460 - startPrice_H // 2, 125 + 99 * num), str(startPrice), font=bigFont, fill=(140, 140, 140))
+        idraw.text((620 - buyoutPrice_H // 2, 125 + 99 * num), str(buyoutPrice), font=bigFont, fill=(140, 140, 140))
+        
         if num >= 4:
             break
+    idraw.text((80, 592), server, font=smallFont, fill=(140, 140, 140))
     path = f'table.png'
     img.save(path)
     img.close()

@@ -20,8 +20,8 @@ class Language:
                     text[lang] = re.sub(r"{.*?}", "{}", text[lang])  # remove all text inside curly braces
                 self.all_text.append(text)  # add text with translation to list
 
-        print(f'Loaded {len(self.all_text)} short texts')
-        print(f'Available languages: {available_languages}')
+        # print(f'Loaded {len(self.all_text)} short texts')
+        # print(f'Available languages: {available_languages}')
 
         # print(f'All avaible text: {self.all_text}')
 
@@ -47,7 +47,7 @@ class Language:
                             pass
                         else:  # if only one arg is given
                             found_text = found_text.format(args)
-                    print(f'Found text: {found_text}')
+                    # print(f'Found text: {found_text}')
                     return found_text  # return translation
 
     async def full_trans(self, text: str, user, args=None):
@@ -56,7 +56,7 @@ class Language:
         with open(f'languages/texts/{text}.txt', encoding='utf-8') as ft:
             text_data = ft.read()
 
-        print(f'text_data: {text_data}')
+        # print(f'text_data: {text_data}')
 
         # find index of "```{user_lang}" in text_data
         index = text_data.find(f'```{user_lang}')
@@ -69,7 +69,7 @@ class Language:
             raise Exception(f'Language "{user_lang}" ending "```" was not found in "{text}"')
 
         result_text = text_data[index + 4 + len(user_lang):index_end]  # text from index to index_end
-        print(f'Found text: {result_text}')
+        # print(f'Found text: {result_text}')
 
         result_text = re.sub(r'{.*?}', '{}', result_text)  # remove all text inside curly braces
 

@@ -15,7 +15,7 @@ def global_server(serv: str) -> bool:
     :param serv: Назва серверу
     :return: Так чи Ні
     """
-    if serv == "ru":
+    if serv.lower() == "ru":
         return False
     else:
         return True
@@ -76,7 +76,7 @@ def search_item_name_by_id(my_item_id: str, server_name: str, lang: str):
                     return a["name"]["lines"]["ru"]
 
 
-def search_item_id_by_name(my_item_name: str, server_name: str):
+def search_item_id_by_name(my_item_name: str, server_name: str, user_lang):
     """
     Пошук Ідентифікатора предмета (XXXX) по його назві в тому числі не повній
     :param server_name: Назва серверу
@@ -90,21 +90,16 @@ def search_item_id_by_name(my_item_name: str, server_name: str):
         item_db = item_db_global
     else:
         item_db = item_db_ru
-    names_list = []
     names_dict = {}
     for a in item_db:
         item_name_ru = a["name"]["lines"]["ru"]
         item_name_en = a["name"]["lines"]["en"]
         if my_item_name.lower() in item_name_en.lower() or my_item_name.lower() in item_name_ru.lower():
-            names_list.append(item_name_en)
-            names_list.append(item_name_ru)
-            names_dict[item_name_en] = a["data"].split("/")[-1][:-5]
-            names_dict[item_name_ru] = a["data"].split("/")[-1][:-5]
-    item_name_list = difflib.get_close_matches(my_item_name, names_list, n=1, cutoff=0.3)
-    if not item_name_list:
-        return None
-    item_name = item_name_list[0]
-    return names_dict[item_name]
+            if user_lang.lower() == 'ru':
+                names_dict[item_name_ru] = a["data"].split("/")[-1][:-5]
+            else:
+                names_dict[item_name_en] = a["data"].split("/")[-1][:-5]
+    return names_dict
 
 
 def get_item_image(my_item_id: str, server_name: str):

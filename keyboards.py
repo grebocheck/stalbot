@@ -46,6 +46,25 @@ async def get_regions_keyboard():
         )
     return kb
 
+async def get_auc_price_keyboard(choices):
+    kb = InlineKeyboardMarkup(resize_keyboard=True)
+
+    kbAucwrd = 'auc:'
+    for choice in choices.keys():
+        kb.add(
+            InlineKeyboardButton(choice, callback_data=f'{kbAucwrd}{choices.get(choice)}'),
+        )
+    return kb
+
+async def get_history_price_keyboard(choices):
+    kb = InlineKeyboardMarkup(resize_keyboard=True)
+
+    kbHiswrd = 'his:'
+    for choice in choices.keys():
+        kb.add(
+            InlineKeyboardButton(choice, callback_data=f'{kbHiswrd}{choices.get(choice)}'),
+        )
+    return kb
 
 async def get_cancel_keyboard(user):
     kb = InlineKeyboardMarkup(resize_keyboard=True)
