@@ -49,8 +49,7 @@ async def process_price_two(message, state: FSMContext):
             return
         else:
             return await bot.send_message(user.id, await lng.trans("На аукционе нет лотов для товара: {}", user, item_name))
-    await bot.send_message(user.id, await lng.trans("Простите, но я не могу найти этот предмет😰", user),
-                        reply_markup=await get_cancel_keyboard(user))
+    await bot.send_message(user.id, await lng.trans("Простите, но я не могу найти этот предмет😰", user))
 
 
 @dp.callback_query_handler(ft.Text(startswith='cur:'))
