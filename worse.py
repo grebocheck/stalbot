@@ -240,12 +240,12 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
         xlab.set_fontsize(f_size)
         ylab.set_fontsize(f_size)
         title.set_fontsize(f_size)
-        # ax = plt.gca()
-        # im = plt.imread(image_path)
-        # ax.figure.figimage(im,
-        #                    ax.bbox.xmax // 2 - im.shape[0] // 2,
-        #                    ax.bbox.ymax // 2 - im.shape[1] // 2,
-        #                    alpha=.50, zorder=1)
+        ax = plt.gca()
+        im = plt.imread(image_path)
+        ax.figure.figimage(im,
+                           ax.bbox.xmax // 2 - im.shape[0] // 2,
+                           ax.bbox.ymax // 2 - im.shape[1] // 2,
+                           alpha=.50, zorder=1)
         f_name = f"plots/plot{a}.png"
         plt.savefig(f_name)
         plt.close()
