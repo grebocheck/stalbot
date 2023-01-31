@@ -218,23 +218,23 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
             xlab = plt.xlabel('Time')
             ylab = plt.ylabel('Price, rub')
             if it_artefact:
-                title = plt.title(f'Price of {item_name} on server {server} ({qlt[lang][a]})')
+                title = plt.title(f'{item_name} {server} ({qlt[lang][a]})')
             else:
-                title = plt.title(f'Price of {item_name} on server {server}')
+                title = plt.title(f'{item_name} {server}')
         elif lang == "uk":
             plt.xlabel('Час')
             ylab = plt.ylabel('Ціна, руб')
             if it_artefact:
-                title = plt.title(f'Ціна на {item_name} на сервері {server} ({qlt[lang][a]})')
+                title = plt.title(f'{item_name} {server} ({qlt[lang][a]})')
             else:
-                title = plt.title(f'Ціна на {item_name} на сервері {server}')
+                title = plt.title(f'{item_name} {server}')
         else:
             xlab = plt.xlabel('Время')
             ylab = plt.ylabel('Цена, руб')
             if it_artefact:
-                title = plt.title(f'Цены на {item_name} на сервере {server} ({qlt[lang][a]})')
+                title = plt.title(f'{item_name} {server} ({qlt[lang][a]})')
             else:
-                title = plt.title(f'Цены на {item_name} на сервере {server}')
+                title = plt.title(f'{item_name} {server}')
         xlab.set_color(text_color)
         ylab.set_color(text_color)
         title.set_color(text_color)
