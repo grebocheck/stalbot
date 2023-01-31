@@ -1,6 +1,7 @@
 from datetime import datetime, timezone, timedelta
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 import aiofiles
@@ -132,6 +133,7 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
             histo = await scb.get_auction_history(item_id=item_id, region=server, limit=100, offset=k * 99)
             k += 1
             histo_prices += histo['prices'][1:]
+
     cords = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
     for a in histo_prices:
         if 'qlt' not in a['additional'] or a['additional']['qlt'] == 0:
@@ -182,40 +184,68 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
             mass_x.append(c)
             mass_max_y.append(mass_pl[c][1])
             mass_min_y.append(mass_pl[c][0])
-        plt.figure(figsize=(10, 10))
-        plt.plot(mass_x, mass_min_y, color='black', linewidth=1, marker='o', markerfacecolor='black', markersize=2)
-        plt.plot(mass_x, mass_max_y, color='black', linewidth=1, marker='o', markerfacecolor='black', markersize=2)
+        f_color = '#6E7F80'
+        text_color = 'white'
+        plt.figure(figsize=(10, 10), facecolor=f_color, edgecolor=text_color)
+        ax = plt.axes()
+        ax.set_facecolor(f_color)
+        ax.tick_params(labelcolor=text_color, labelsize=16)
+        def formatPrice(price, x):
+            price = round(price)
+            sprice = str(price)
+            ks = (len(sprice)-1) // 3
+            if ks == 0:
+                return sprice
+            else:
+                s = ''
+                if sprice[-(ks*3):-(ks*3)+2] != '00':
+                    s = ','+sprice[-(ks*3):-(ks*3)+2]
+                prc = sprice[0:-(ks*3)]+s+'k'*ks
+                return prc
+        ax.yaxis.set_major_formatter(FuncFormatter(formatPrice))
+        for spn in ax.spines.values(): spn.set_color('black')
+        for t in ax.xaxis.get_ticklines(): t.set_color(text_color)
+        for t in ax.yaxis.get_ticklines(): t.set_color(text_color)
+        plt.plot(mass_x, mass_min_y, color='black', linewidth=2, marker='o', markerfacecolor='black', markersize=3)
+        plt.plot(mass_x, mass_max_y, color='black', linewidth=2, marker='o', markerfacecolor='black', markersize=3)
         plt.fill_between(mass_x, mass_min_y, mass_max_y,
                          facecolor=colors[a])
         plt.xticks(rotation=20)
         it_artefact = dbitem.is_it_artifact(my_item_id=item_id, server_name=server)
         if lang == "en":
-            plt.xlabel('Time')
-            plt.ylabel('Price, rub')
+            xlab = plt.xlabel('Time')
+            ylab = plt.ylabel('Price, rub')
             if it_artefact:
-                plt.title(f'Price of {item_name} on server {server} ({qlt[lang][a]})')
+                title = plt.title(f'Price of {item_name} on server {server} ({qlt[lang][a]})')
             else:
-                plt.title(f'Price of {item_name} on server {server}')
+                title = plt.title(f'Price of {item_name} on server {server}')
         elif lang == "uk":
             plt.xlabel('Час')
-            plt.ylabel('Ціна, руб')
+            ylab = plt.ylabel('Ціна, руб')
             if it_artefact:
-                plt.title(f'Ціна на {item_name} на сервері {server} ({qlt[lang][a]})')
+                title = plt.title(f'Ціна на {item_name} на сервері {server} ({qlt[lang][a]})')
             else:
-                plt.title(f'Ціна на {item_name} на сервері {server}')
+                title = plt.title(f'Ціна на {item_name} на сервері {server}')
         else:
-            plt.xlabel('Время')
-            plt.ylabel('Цена, руб')
+            xlab = plt.xlabel('Время')
+            ylab = plt.ylabel('Цена, руб')
             if it_artefact:
-                plt.title(f'Цены на {item_name} на сервере {server} ({qlt[lang][a]})')
+                title = plt.title(f'Цены на {item_name} на сервере {server} ({qlt[lang][a]})')
             else:
-                plt.title(f'Цены на {item_name} на сервере {server}')
-        ax = plt.gca()
-        im = plt.imread(image_path)
-        ax.figure.figimage(im,
-                           ax.bbox.xmax // 2 - im.shape[0] // 2,
-                           ax.bbox.ymax // 2 - im.shape[1] // 2,
-                           alpha=.50, zorder=1)
+                title = plt.title(f'Цены на {item_name} на сервере {server}')
+        xlab.set_color(text_color)
+        ylab.set_color(text_color)
+        title.set_color(text_color)
+        f_size = 15
+        xlab.set_fontsize(f_size)
+        ylab.set_fontsize(f_size)
+        title.set_fontsize(f_size)
+        # ax = plt.gca()
+        # im = plt.imread(image_path)
+        # ax.figure.figimage(im,
+        #                    ax.bbox.xmax // 2 - im.shape[0] // 2,
+        #                    ax.bbox.ymax // 2 - im.shape[1] // 2,
+        #                    alpha=.50, zorder=1)
         f_name = f"plots/plot{a}.png"
         plt.savefig(f_name)
         plt.close()

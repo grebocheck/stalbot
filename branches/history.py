@@ -15,7 +15,7 @@ async def process_history_one(message: types.Message):
 
 @dp.callback_query_handler(ft.Text(startswith='his:'), state='*')
 @dp.message_handler(content_types=ContentType.TEXT, state=Form_Hist.get_item)
-async def process_history_two(message: types.Message | types.CallbackQuery, state: FSMContext):
+async def process_history_two(message, state: FSMContext):
     await state.finish()
     user = message.from_user
     user_lang = await lng.get_user_lang(user)
@@ -49,7 +49,7 @@ async def process_history_two(message: types.Message | types.CallbackQuery, stat
                                    #                         [item_name, user_server]),
                                    # parse_mode="Markdown", reply_markup=await get_main_keyboard(user)
                                    )
-        for a in plot:
-            os.remove(a)
+        # for a in plot:
+        #     os.remove(a)
     else:
         await bot.send_message(user.id, await lng.trans("Простите, но я не могу найти этот предмет😰", user))
