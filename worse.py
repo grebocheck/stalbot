@@ -198,8 +198,10 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
                 return sprice
             else:
                 s = ''
-                if sprice[-(ks*3):-(ks*3)+2] != '00':
-                    s = ','+sprice[-(ks*3):-(ks*3)+2]
+                if sprice[-(ks*3):-(ks*3)+1] != '0':
+                    s = ','+sprice[-(ks*3):-(ks*3)+1]
+                    if sprice[-(ks*3)+1:-(ks*3)+2] != '0':
+                        s += sprice[-(ks*3)+1:-(ks*3)+2]
                 prc = sprice[0:-(ks*3)]+s+'k'*ks
                 return prc
         ax.yaxis.set_major_formatter(FuncFormatter(formatPrice))
@@ -239,7 +241,7 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
         f_size = 15
         xlab.set_fontsize(f_size)
         ylab.set_fontsize(f_size)
-        title.set_fontsize(f_size)
+        title.set_fontsize(25)
         ax = plt.gca()
         im = plt.imread(image_path)
         ax.figure.figimage(im,
