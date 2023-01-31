@@ -222,7 +222,7 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
             else:
                 title = plt.title(f'{item_name} {server}')
         elif lang == "uk":
-            plt.xlabel('Час')
+            xlab = plt.xlabel('Час')
             ylab = plt.ylabel('Ціна, руб')
             if it_artefact:
                 title = plt.title(f'{item_name} {server} ({qlt[lang][a]})')
@@ -245,9 +245,9 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
         ax = plt.gca()
         im = plt.imread(image_path)
         ax.figure.figimage(im,
-                           ax.bbox.xmax // 2 - im.shape[0] // 2,
-                           ax.bbox.ymax // 2 - im.shape[1] // 2,
-                           alpha=.50, zorder=1)
+                           im.shape[0], #ax.bbox.xmax // 1 - im.shape[0] // 1,
+                           ax.bbox.ymax // 1 - im.shape[1] // 1,
+                           alpha=1, zorder=1)
         f_name = f"plots/plot{a}.png"
         plt.savefig(f_name)
         plt.close()
