@@ -1,5 +1,7 @@
 from datetime import datetime, timezone, timedelta
 from prettytable import PrettyTable
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import numpy as np
