@@ -128,7 +128,7 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
     histo = await scb.get_auction_history(item_id=item_id, region=server, limit=100, offset=0)
     histo_prices = histo['prices']
     k = 1
-    max_iterations = 80
+    max_iterations = 1000
     if days_lim is None:
         days_lim = 10000
     lim_time = datetime.now(timezone.utc) - timedelta(days=days_lim)
