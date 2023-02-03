@@ -46,6 +46,7 @@ async def get_regions_keyboard():
         )
     return kb
 
+
 async def get_auc_price_keyboard(choices):
     kb = InlineKeyboardMarkup(resize_keyboard=True)
 
@@ -56,6 +57,7 @@ async def get_auc_price_keyboard(choices):
         )
     return kb
 
+
 async def get_history_price_keyboard(choices):
     kb = InlineKeyboardMarkup(resize_keyboard=True)
 
@@ -65,6 +67,7 @@ async def get_history_price_keyboard(choices):
             InlineKeyboardButton(choice, callback_data=f'{kbHiswrd}{choices.get(choice)}'),
         )
     return kb
+
 
 async def get_cancel_keyboard(user):
     kb = InlineKeyboardMarkup(resize_keyboard=True)
@@ -92,6 +95,20 @@ async def get_emission_close_keyboard(user):
         InlineKeyboardButton(await lng.trans('Отключить уведомления❌', user),
                              callback_data=f'{kbRgnwrd}0')
     )
+    return kb
+
+
+async def get_choose_time_keyboard(user):
+    kb = InlineKeyboardMarkup(resize_keyboard=True)
+    kbRgnwrd = 'htime:'
+    kb.add(InlineKeyboardButton(await lng.trans('За всё время', user),
+                                callback_data=f'{kbRgnwrd}0'))
+    kb.add(InlineKeyboardButton(await lng.trans('7 дней', user),
+                                callback_data=f'{kbRgnwrd}1'))
+    kb.add(InlineKeyboardButton(await lng.trans('30 дней', user),
+                                callback_data=f'{kbRgnwrd}2'))
+    kb.add(InlineKeyboardButton(await lng.trans('90 дней', user),
+                                callback_data=f'{kbRgnwrd}3'))
     return kb
 
 

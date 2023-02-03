@@ -18,6 +18,7 @@ class Form_Serv(StatesGroup):
 
 # форма отримання історії цін на предмет
 class Form_Hist(StatesGroup):
+    get_time = State()
     get_item = State()
 
 

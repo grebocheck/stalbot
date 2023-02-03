@@ -1,7 +1,6 @@
 from datetime import datetime, timezone, timedelta
 from prettytable import PrettyTable
 import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import numpy as np
@@ -13,6 +12,8 @@ import database.dbitem as dbitem
 
 from bot import *
 from additions.apio import scb
+
+matplotlib.use('Agg')
 
 
 async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
@@ -113,9 +114,10 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
     return [file, back_btn, next_btn]
 
 
-async def get_history(item_id: str, server: str, lang: str, item_name: str, image_path: str):
+async def get_history(item_id: str, server: str, lang: str, item_name: str, image_path: str, days_lim=None):
     """
     Функція обробник, на основі запиту на історію формує графік
+    :param days_lim: До какого времени собирать график
     :param item_id: Ідентифікатор предмету (XXXX)
     :param server: Назва серверу
     :param lang: Мова інтерфейсу
@@ -126,18 +128,31 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
     histo = await scb.get_auction_history(item_id=item_id, region=server, limit=100, offset=0)
     histo_prices = histo['prices']
     k = 1
-    while True:
+    max_iterations = 80
+    if days_lim is None:
+        days_lim = 10000
+    lim_time = datetime.now(timezone.utc) - timedelta(days=days_lim)
+    for a in range(max_iterations):
         last_time = datetime.strptime(histo['prices'][-1]['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")
         len_histo = len(histo['prices'])
-        if last_time < datetime.now(timezone.utc) - timedelta(days=30) or len_histo != 100:
+        if last_time < lim_time or len_histo != 100:
             break
         else:
             histo = await scb.get_auction_history(item_id=item_id, region=server, limit=100, offset=k * 99)
             k += 1
-            histo_prices += histo['prices'][1:]
+            if 'prices' in histo:
+                histo_prices += histo['prices'][1:]
+            else:
+                break
+
+    histo_filt = []
+    for a in histo_prices:
+        a_time = datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")
+        if a_time > lim_time:
+            histo_filt.append(a)
 
     cords = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
-    for a in histo_prices:
+    for a in histo_filt:
         if 'qlt' not in a['additional'] or a['additional']['qlt'] == 0:
             cords['0'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
         elif a['additional']['qlt'] == 1:
@@ -192,20 +207,22 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
         ax = plt.axes()
         ax.set_facecolor(f_color)
         ax.tick_params(labelcolor=text_color, labelsize=16)
+
         def formatPrice(price, x):
             price = round(price)
             sprice = str(price)
-            ks = (len(sprice)-1) // 3
+            ks = (len(sprice) - 1) // 3
             if ks == 0:
                 return sprice
             else:
                 s = ''
-                if sprice[-(ks*3):-(ks*3)+1] != '0':
-                    s = ','+sprice[-(ks*3):-(ks*3)+1]
-                    if sprice[-(ks*3)+1:-(ks*3)+2] != '0':
-                        s += sprice[-(ks*3)+1:-(ks*3)+2]
-                prc = sprice[0:-(ks*3)]+s+'k'*ks
+                if sprice[-(ks * 3):-(ks * 3) + 1] != '0':
+                    s = ',' + sprice[-(ks * 3):-(ks * 3) + 1]
+                    if sprice[-(ks * 3) + 1:-(ks * 3) + 2] != '0':
+                        s += sprice[-(ks * 3) + 1:-(ks * 3) + 2]
+                prc = sprice[0:-(ks * 3)] + s + 'k' * ks
                 return prc
+
         ax.yaxis.set_major_formatter(FuncFormatter(formatPrice))
         for spn in ax.spines.values(): spn.set_color('black')
         for t in ax.xaxis.get_ticklines(): t.set_color(text_color)
@@ -247,11 +264,13 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
         ax = plt.gca()
         im = plt.imread(image_path)
         ax.figure.figimage(im,
-                           im.shape[0], #ax.bbox.xmax // 1 - im.shape[0] // 1,
+                           im.shape[0],  # ax.bbox.xmax // 1 - im.shape[0] // 1,
                            ax.bbox.ymax // 1 - im.shape[1] // 1,
                            alpha=1, zorder=1)
         f_name = f"plots/plot{a}.png"
         plt.savefig(f_name)
         plt.close()
         mass_images.append(f_name)
+    if not mass_images:
+        mass_images.append('images/not-found.png')
     return mass_images
