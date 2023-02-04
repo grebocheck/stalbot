@@ -26,7 +26,7 @@ async def emission_logger(region):
                     await bot.send_message(user.id,
                                            await lng.trans("На сервере {} начался выброс🌩", user, user_server),
                                            reply_markup=await get_emission_close_keyboard(user))
-                except aiogram.utils.exceptions.BotBlocked:
+                except (aiogram.utils.exceptions.BotBlocked, aiogram.utils.exceptions.UserDeactivated):
                     await db.userSettings.update_one(
                         {
                             'telegram_id': user.id
