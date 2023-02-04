@@ -17,7 +17,7 @@ matplotlib.use('Agg')
 
 
 async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
-                      item_name: str, page: int, order: bool, select: str):
+                      item_name: str, page: int, order: bool, select: str, user_id):
     """
     Функція обробник, формує відповіть з апі в повідомлення для бота
     :param select: Тип сортування
@@ -34,6 +34,10 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
     limit = LEN_TABLE + 1
     lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit,
                                       offset=page * LEN_TABLE, order=order, select=select)
+    if 'lots' not in lots:
+        page = 0
+        lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit,
+                                          offset=page * LEN_TABLE, order=order, select=select)
     if len(lots['lots']) == limit:
         next_btn = True
     else:
@@ -107,11 +111,10 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
         if num >= 4:
             break
     idraw.text((80, 592), server, font=smallFont, fill=(140, 140, 140))
-    path = f'table.png'
+    path = f'table{user_id}.png'
     img.save(path)
     img.close()
-    file = open("table.png", "rb")
-    return [file, back_btn, next_btn]
+    return [path, back_btn, next_btn]
 
 
 async def get_history(item_id: str, server: str, lang: str, item_name: str, image_path: str, days_lim=None):

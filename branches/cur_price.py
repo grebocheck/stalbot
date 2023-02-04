@@ -38,14 +38,14 @@ async def process_price_two(message, state: FSMContext):
         plot, back_btn, next_btn = await worse.get_auc_lot(item_id=it_item, server=user_server,
                                                            lang=user_lang, image_path=image_path,
                                                            page=0, item_name=item_name,
-                                                           select="buyout_price", order=True)
+                                                           select="buyout_price", order=True, user_id=user.id)
         if plot:
             keyboard = await get_cur_price_keyboard(next_btn=next_btn, back_btn=back_btn, page=0,
                                                     item=it_item, select="buyout_price", order=True,
                                                     user=user)
-            await bot.send_photo(user.id, plot, reply_markup=keyboard)
+            await bot.send_photo(user.id, open(plot, "rb"), reply_markup=keyboard)
             plot.close()
-            os.remove("table.png")
+            os.remove(plot)
             return
         else:
             return await bot.send_message(user.id, await lng.trans("На аукционе нет лотов для товара: {}", user, item_name))
@@ -80,15 +80,15 @@ async def cnange_emission_callback(callback: types.CallbackQuery):
     plot, back_btn, next_btn = await worse.get_auc_lot(item_id=it_item, server=user_server,
                                                        lang=user_lang, image_path=image_path,
                                                        page=page, item_name=item_name,
-                                                       select=select, order=order)
+                                                       select=select, order=order, user_id=user.id)
     if plot:
         keyboard = await get_cur_price_keyboard(next_btn=next_btn, back_btn=back_btn, page=page,
                                                 item=it_item, select=select, order=order,
                                                 user=user)
-        await callback.message.edit_media(media=types.InputMediaPhoto(plot),
+        await callback.message.edit_media(media=types.InputMediaPhoto(open(plot, "rb")),
                                           reply_markup=keyboard)
         plot.close()
-        os.remove("table.png")
+        os.remove(plot)
         return
     else:
         return await callback.message.reply(await lng.trans("На аукционе нет лотов для товара: {}",
