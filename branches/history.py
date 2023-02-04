@@ -28,7 +28,7 @@ async def process_history_three(callback: types.CallbackQuery, state: FSMContext
     async with state.proxy() as data:
         data["days_lim"] = days_lim
     await bot.delete_message(user.id, message_id=callback.message.message_id)
-    await bot.send_message(user.id, "Введите название предмета📦",
+    await bot.send_message(user.id, await lng.trans("Введите название предмета📦", user),
                            reply_markup=await get_cancel_keyboard(user))
     await Form_Hist.next()
 
