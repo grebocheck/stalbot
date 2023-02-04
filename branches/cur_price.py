@@ -44,7 +44,6 @@ async def process_price_two(message, state: FSMContext):
                                                     item=it_item, select="buyout_price", order=True,
                                                     user=user)
             await bot.send_photo(user.id, open(plot, "rb"), reply_markup=keyboard)
-            plot.close()
             os.remove(plot)
             return
         else:
@@ -87,7 +86,6 @@ async def cnange_emission_callback(callback: types.CallbackQuery):
                                                 user=user)
         await callback.message.edit_media(media=types.InputMediaPhoto(open(plot, "rb")),
                                           reply_markup=keyboard)
-        plot.close()
         os.remove(plot)
         return
     else:
