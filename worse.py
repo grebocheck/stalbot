@@ -132,6 +132,8 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
     if days_lim is None:
         days_lim = 10000
     lim_time = datetime.now(timezone.utc) - timedelta(days=days_lim)
+    if 'prices' not in histo:
+        return ['images/not-found.png']
     for a in range(max_iterations):
         last_time = datetime.strptime(histo['prices'][-1]['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")
         len_histo = len(histo['prices'])
