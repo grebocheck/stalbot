@@ -41,7 +41,7 @@ async def get_statistic_proccess(message: types.Message):
                 ru_lang += 1
 
         text = await lng.trans("Статистика\nВсего пользователей: %d\nОповещения о выбросах: %d\n\nСервера\nEU: "
-                               "%d\nRU: %d\nNA: %d\nSEA: %d\n\nЯзыки:\nEN: %d\nUA: %d\nRU: %dа", user) % (
+                               "%d\nRU: %d\nNA: %d\nSEA: %d\n\nЯзыки:\nEN: %d\nUA: %d\nRU: %d", user) % (
             users_count,
             emission_count,
             eu_serv,
