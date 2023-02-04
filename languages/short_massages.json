@@ -175,7 +175,7 @@
         "uk": "30 днів"
       },
       {
-        "ru": "Статистика\nВсего пользователей: %d\nОповещения о выбросах: %d\n\nСервера\nEU: %d\nRU: %d\nNA: %d\nSEA: %d\n\nЯзыки:\nEN: %d\nUA: %d\nRU: %dа",
+        "ru": "Статистика\nВсего пользователей: %d\nОповещения о выбросах: %d\n\nСервера\nEU: %d\nRU: %d\nNA: %d\nSEA: %d\n\nЯзыки:\nEN: %d\nUA: %d\nRU: %d",
         "en": "Statistics\nTotal users: %d\nEmissions alerts: %d\n\nServers\nEU: %d\nRU: %d\nNA: %d\nSEA: %d\n\nLanguages:\nEN: %d\nUA: %d\nRU: %d",
         "uk": "Статистика\nУсього користувачів: %d\nСповіщення про викиди: %d\n\nСервери\nEU: %d\nRU: %d\nNA: %d\nSEA: %d\n\nМови:\nEN: %d\nUA: %d\nRU: %d"
       },
