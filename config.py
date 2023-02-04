@@ -9,6 +9,7 @@ client_secret = config['StalCraft']['client_secret']
 
 #telegram
 telegram_token = config['Telegram']['token']
+admin_list = [int(item) for item in config['Telegram']['admins'].split(" ")]
 
 #mongo
 mongoConnectUrl = config['MongoDB']['connection_url']

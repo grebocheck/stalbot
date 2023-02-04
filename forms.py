@@ -30,3 +30,8 @@ class Form_Check(StatesGroup):
 # форма налаштуваннь сповіщень про викиди
 class Form_Notif(StatesGroup):
     get_mode = State()
+
+
+# форма для розсилки
+class Form_Send(StatesGroup):
+    get_mess = State()

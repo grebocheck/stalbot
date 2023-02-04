@@ -34,6 +34,9 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
     limit = LEN_TABLE + 1
     lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit,
                                       offset=page * LEN_TABLE, order=order, select=select)
+    if lots.get('total') == 0:
+        return [None, False, False]
+
     if 'lots' not in lots:
         page = 0
         lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit,
@@ -46,8 +49,6 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
         back_btn = False
     else:
         back_btn = True
-    if lots.get('total') == 0:
-        return [None, False, False]
     if lang == 'ru':
         img = Image.open('images/pdaRu.png').convert("RGB")
     elif lang == 'uk':

@@ -29,3 +29,15 @@ async def get_all_users_emission():
         user.id = a.get('telegram_id')
         mass.append(user)
     return mass
+
+
+async def get_all_users():
+    bd_data = db.userSettings.find()
+    mass = []
+    async for a in bd_data:
+        user_id = a.get('telegram_id')
+        user_serv = a.get('region')
+        user_lang = a.get('language')
+        user_emiss = a.get('emission')
+        mass.append([user_id, user_serv, user_lang, user_emiss])
+    return mass
