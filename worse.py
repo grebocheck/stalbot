@@ -7,6 +7,7 @@ import numpy as np
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 import aiofiles
 import os
+import re
 
 import database.dbitem as dbitem
 
@@ -41,6 +42,7 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
         page = 0
         lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit,
                                           offset=page * LEN_TABLE, order=order, select=select)
+    log_deb(str(lots))
     if len(lots['lots']) == limit:
         next_btn = True
     else:
@@ -85,7 +87,7 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
         buyoutPrice_H, buyoutPrice_W = bigFont.getsize(str(buyoutPrice))
 
         quality = 0
-        item_name_tab = item_name
+        item_name_tab = re.sub(r'^(.{15}).*$', '\g<1>...', item_name)
         if it_artefact:
             if 'qlt' not in lot['additional'] or lot['additional']['qlt'] == 0:
                 quality = 0
