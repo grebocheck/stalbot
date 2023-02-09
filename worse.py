@@ -161,17 +161,17 @@ async def get_history(item_id: str, server: str, lang: str, item_name: str, imag
     cords = {"0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": []}
     for a in histo_filt:
         if 'qlt' not in a['additional'] or a['additional']['qlt'] == 0:
-            cords['0'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+            cords['0'].append([int(a['price'])/int(a['amount']), datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
         elif a['additional']['qlt'] == 1:
-            cords['1'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+            cords['1'].append([int(a['price'])/int(a['amount']), datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
         elif a['additional']['qlt'] == 2:
-            cords['2'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+            cords['2'].append([int(a['price'])/int(a['amount']), datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
         elif a['additional']['qlt'] == 3:
-            cords['3'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+            cords['3'].append([int(a['price'])/int(a['amount']), datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
         elif a['additional']['qlt'] == 4:
-            cords['4'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+            cords['4'].append([int(a['price'])/int(a['amount']), datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
         elif a['additional']['qlt'] == 5:
-            cords['5'].append([a['price'], datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
+            cords['5'].append([int(a['price'])/int(a['amount']), datetime.strptime(a['time'] + "+0000", "%Y-%m-%dT%H:%M:%SZ%z")])
     mass_images = []
     colors = {"0": "gray", "1": "green", "2": "blue", "3": "purple", "4": "red", "5": "yellow"}
     qlt = {
