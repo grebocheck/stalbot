@@ -42,7 +42,6 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
         page = 0
         lots = await scb.get_auction_lots(item_id=item_id, region=server, limit=limit,
                                           offset=page * LEN_TABLE, order=order, select=select)
-    log_deb(str(lots))
     if len(lots['lots']) == limit:
         next_btn = True
     else:
