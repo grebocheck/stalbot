@@ -76,6 +76,7 @@ async def process_send_all_step_two(message: types.Message, state: FSMContext):
     Команда рассылки пользователям бота
     Вторая стадия - Рассылка и отчет
     """
+    user = message.from_user
     async with state.proxy() as data:
         user_id_mass = data['mass_id']
     await state.finish()
@@ -87,6 +88,6 @@ async def process_send_all_step_two(message: types.Message, state: FSMContext):
             num_succ += 1
         except:
             pass
-    text = await lng.trans("Готово, отправлено") + f" {num_succ}/{num_users}"
+    text = await lng.trans("Готово, отправлено", user) + f" {num_succ}/{num_users}"
     await message.answer(text)
 
