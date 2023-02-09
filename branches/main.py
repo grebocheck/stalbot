@@ -12,13 +12,13 @@ async def cancel_handler(message, state: FSMContext):
     Функція скасування будь-якої дії
     """
     user = message.from_user
+    await state.finish()
     await bot.delete_message(user.id, message_id=message.message.message_id)
     current_state = await state.get_state()
     if current_state is None:
         await bot.send_message(user.id, await lng.trans('Действие отменено⛔️', user),
                                reply_markup=await get_main_keyboard(user))
         return
-    await state.finish()
     await bot.send_message(user.id, await lng.trans('Действие отменено⛔️', user),
                            reply_markup=await get_main_keyboard(user))
 
@@ -32,6 +32,7 @@ async def process_start_command(message: types.Message, state: FSMContext):
     """
     user = message.from_user
     # add user to database
+    await state.finish()
     await db.users.update_one({'telegram_id': user.id},
                               {'$set': {'username': '@' + str(user.username)}},  # set username
                               True)
