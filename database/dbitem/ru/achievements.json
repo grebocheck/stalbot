@@ -6206,6 +6206,28 @@
     "points": 0
   },
   {
+    "id": "pixel_battle_2023",
+    "title": {
+      "type": "translation",
+      "key": "general.achievement.id.pixel_battle_2023.title",
+      "args": {},
+      "lines": {
+        "ru": "Пиксельный воин 2023",
+        "en": "Pixel Warrior 2023"
+      }
+    },
+    "description": {
+      "type": "translation",
+      "key": "general.achievement.id.pixel_battle_2023.desc",
+      "args": {},
+      "lines": {
+        "ru": "Поддержать EXBO в \"VK Pixel battle 2023\" при помощи Discord",
+        "en": "Support EXBO in the VK Pixel Battle 2023 using Discord"
+      }
+    },
+    "points": 0
+  },
+  {
     "id": "pixel_battle_hero",
     "title": {
       "type": "translation",

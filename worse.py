@@ -76,8 +76,12 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
 
         date_str = "%02d:%02d %02d с" % (hours, minutes, sec)
 
-        startPrice = lot['startPrice']
+        if 'currentPrice' in lot:
+            startPrice = lot['currentPrice']
+        else:
+            startPrice = lot['startPrice']
         buyoutPrice = lot['buyoutPrice']
+        amount = lot['amount']
 
         if buyoutPrice == 0:
             buyoutPrice = "---"
@@ -106,6 +110,8 @@ async def get_auc_lot(item_id: str, server: str, lang: str, image_path: str,
 
         idraw.text((165, 111 + 99 * num), item_name_tab, font=font, fill=quality_color.get(quality))
         idraw.text((165, 150 + 99 * num), date_str, font=font, fill=(200, 200, 0))
+        if amount > 1:
+            idraw.text((70, 163 + 99 * num), f"{amount} шт.", font=font, fill=(255, 255, 255))
 
         idraw.text((460 - startPrice_H // 2, 125 + 99 * num), str(startPrice), font=bigFont, fill=(140, 140, 140))
         idraw.text((620 - buyoutPrice_H // 2, 125 + 99 * num), str(buyoutPrice), font=bigFont, fill=(140, 140, 140))
