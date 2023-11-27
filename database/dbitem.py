@@ -131,3 +131,27 @@ def is_it_artifact(my_item_id: str, server_name: str):
         return True
     else:
         return False
+
+
+def good_item_list(server_name, user_lang):
+    """
+    Пошук предметів для сканування
+    :param server_name: Назва серверу
+    :return: Масив ID предметів
+    """
+    white_list = ['weapon', 'armor', 'containers', 'backpack', 'attachment']
+    gl_server = global_server(server_name)
+    if gl_server:
+        item_db = item_db_global
+    else:
+        item_db = item_db_ru
+    names_dict = {}
+    for a in item_db:
+        item_name_ru = a["name"]["lines"]["ru"]
+        item_name_en = a["name"]["lines"]["en"]
+        if a['data'].split('/')[2] in white_list:
+            if user_lang.lower() == 'ru':
+                names_dict[item_name_ru] = a["data"].split("/")[-1][:-5]
+            else:
+                names_dict[item_name_en] = a["data"].split("/")[-1][:-5]
+    return names_dict
