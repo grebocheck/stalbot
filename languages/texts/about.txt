@@ -1,0 +1,11 @@
+```ru
+Этот бот основан на Stalcraft API. Тут вы можете посмотреть статистику цен на всех серверах, смотреть цены на определенные предметы и получать уведомления о выбросах. Создатели @heridium, @lolkof, A-l-e-s-t
+```
+
+```en
+This bot is based on the Stalcraft API. Here you can see the price statistics on all servers, watch the prices of certain items and receive notifications about emissions. Creators @heridium, @lolkof, A-l-e-s-t
+```
+
+```uk
+Цей бот заснований на Stalcraft API. Тут ви можете подивитися статистику цін на всіх серверах, дивитися ціни на певні предмети і отримувати повідомлення про викиди. Творці @heridium, @lolkof, A-l-e-s-t
+```

@@ -1,0 +1,16 @@
+settings.ini
+__pycache__
+/venv
+/.idea
+logs/logs/*txt
+/database/bot/data.db
+box.py
+sc_bot_api.py
+sc_api.py
+test.py
+test2.py
+test3.py
+/logs
+/log
+/plots
+/database/dbitem
